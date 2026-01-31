@@ -1,10 +1,10 @@
 variable "regions" { type = set(string) }
 variable "role_arn" { type = string }
-variable "aws_token" {
+variable "identity_token" {
   type      = string
   ephemeral = true
 }
-variable "tags" {
+variable "default_tags" {
   type    = map(string)
   default = {}
 }

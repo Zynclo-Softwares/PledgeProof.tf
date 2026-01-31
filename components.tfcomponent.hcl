@@ -3,7 +3,7 @@ component "s3" {
   source   = "./s3"
   inputs = {
     # Unique bucket name (S3 names are global)
-    bucket_name = "zynclo-pledgeproof-test-${each.value}"
+    bucket_name = "pledgeproof-${each.value}"
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }
