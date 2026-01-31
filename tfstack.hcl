@@ -1,4 +1,3 @@
-# MERGE ALL - HCP will recognize THIS file
 required_providers {
   aws = { source = "hashicorp/aws", version = "~> 5.7.0" }
 }
@@ -13,7 +12,7 @@ provider "aws" "configurations" {
   config {
     region = each.value
     assume_role_with_web_identity {
-      role_arn = var.role_arn
+      role_arn           = var.role_arn
       web_identity_token = var.aws_token
     }
     default_tags { tags = var.tags }
@@ -22,10 +21,10 @@ provider "aws" "configurations" {
 
 component "s3" {
   for_each = var.regions
-  source = "./s3"
+  source   = "./s3"
   inputs = {
-    region = each.value
-    bucket_name = "test-bucket-${each.value}"
+    # Unique bucket name (S3 names are global)
+    bucket_name = "zynclo-pledgeproof-test-${each.value}"
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }
