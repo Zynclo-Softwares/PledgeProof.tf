@@ -3,7 +3,17 @@ component "s3" {
   source   = "./s3"
   inputs = {
     # Unique bucket name (S3 names are global)
-    bucket_name = "pledgeproof-${each.value}"
+    bucket_name  = "pledgeproof-${each.value}"
+    default_tags = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
+
+component "dynamodb" {
+  for_each = var.regions
+  source   = "./dynamodb"
+  inputs = {
+    table_name   = "PledgeProofs-${each.value}"
     default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }

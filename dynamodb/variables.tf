@@ -1,5 +1,5 @@
-variable "bucket_name" {
-  description = "s3 service bucket name."
+variable "table_name" {
+  description = "dynamodb table name."
   type = string
 }
 
