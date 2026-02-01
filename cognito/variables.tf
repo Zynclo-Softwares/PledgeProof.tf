@@ -23,3 +23,8 @@ variable "gcp_client_secret" {
     type = string
     sensitive = true
 }
+
+variable "app_scheme" {
+  description = "Where google oauth would return back to as a callback."
+  type        = string
+}

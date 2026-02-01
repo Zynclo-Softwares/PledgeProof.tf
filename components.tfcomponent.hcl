@@ -25,6 +25,7 @@ component "cognito" {
   inputs = {
     pool_name         = "PledgeProof-${each.value}"
     domain_name       = "pledgeproof-${each.value}"
+    app_scheme        = "pledgeproofai"
     default_tags      = var.default_tags
     gcp_client_id     = var.gcp_client_id
     gcp_client_secret = var.gcp_client_secret

@@ -79,3 +79,32 @@ resource "aws_cognito_identity_provider" "google" {
     ignore_changes = [attribute_mapping, provider_details]
   }
 }
+
+# a client for server and mobile app
+resource "aws_cognito_user_pool_client" "app_client" {
+  name         = "${var.pool_name}-app-client"
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+  generate_secret = false
+
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows = ["code"]
+  allowed_oauth_scopes = ["email", "openid", "profile"]
+  callback_urls = [
+    "${var.app_scheme}://callback", # mobile app custom scheme
+    "https://${var.domain_name}.auth.${data.aws_region.current.name}.amazoncognito.com/oauth2/idpresponse" # cognito hosted ui
+  ]
+  logout_urls = [
+    "${var.app_scheme}://signout",
+    "https://${var.domain_name}.auth.${data.aws_region.current.name}.amazoncognito.com/logout"
+  ]
+
+  supported_identity_providers = ["Google"]
+
+  # allow user password auth and refresh token auth beside oauth
+  explicit_auth_flows = [
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH"
+  ]
+
+  prevent_user_existence_errors = "ENABLED"
+}
