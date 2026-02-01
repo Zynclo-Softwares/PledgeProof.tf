@@ -28,3 +28,5 @@ variable "app_scheme" {
   description = "Where google oauth would return back to as a callback."
   type        = string
 }
+
+data "aws_region" "current" {}
