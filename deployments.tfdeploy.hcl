@@ -12,8 +12,8 @@ deployment "test" {
     regions           = ["ca-central-1"]
     role_arn          = "arn:aws:iam::659271373941:role/TerraformAdminAccessOIDC"
     identity_token    = identity_token.aws.jwt
-    gcp_client_id     = store.varset.pp_secrets["gcp_client_id"]
-    gcp_client_secret = store.varset.pp_secrets["gcp_client_secret"]
+    gcp_client_id     = store.varset.pp_secrets.gcp_client_id
+    gcp_client_secret = store.varset.pp_secrets.gcp_client_secret
     default_tags = {
       App         = "PledgeProof"
       Environment = "Test"
