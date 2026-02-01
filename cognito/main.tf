@@ -91,7 +91,8 @@ resource "aws_cognito_user_pool_client" "app_client" {
   allowed_oauth_scopes = ["email", "openid", "profile"]
   callback_urls = [
     "${var.app_scheme}://callback", # mobile app custom scheme
-    "https://${var.domain_name}.auth.${data.aws_region.current.name}.amazoncognito.com/oauth2/idpresponse" # cognito hosted ui
+    "https://${var.domain_name}.auth.${data.aws_region.current.name}.amazoncognito.com/oauth2/idpresponse" ,
+    "https://www.google.com" # for testing purpose
   ]
   logout_urls = [
     "${var.app_scheme}://signout",
