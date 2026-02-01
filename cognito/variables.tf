@@ -14,5 +14,12 @@ variable "default_tags" {
   default = {}
 }
 
-variable "gcp_client_id" {}
-variable "gcp_client_secret" { sensitive = true }
+variable "gcp_client_id" {
+    description = "GCP OAuth Client ID."
+    type = string
+}
+variable "gcp_client_secret" { 
+    description = "GCP OAuth Client Secret."
+    type = string
+    sensitive = true
+}
