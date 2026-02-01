@@ -9,5 +9,10 @@ variable "default_tags" {
   default = {}
 }
 
-variable "gcp_client_id" {}
-variable "gcp_client_secret" { sensitive = true }
+variable "gcp_client_id" {
+  type = string
+}
+variable "gcp_client_secret" { 
+  type = string
+  sensitive = true 
+}
