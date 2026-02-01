@@ -1,0 +1,15 @@
+variable "pool_name" {
+  description = "cognito user pool name."
+  type = string
+}
+
+variable "domain_name" {
+  description = "cognito user pool google oauth redirection domain."
+  type = string 
+}
+
+variable "default_tags" {
+  description = "default tags to apply to all resources."
+  type    = map(string)
+  default = {}
+}

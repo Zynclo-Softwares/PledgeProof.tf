@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "pledge_proofs" {
+resource "aws_dynamodb_table" "table" {
   name         = var.table_name
   
   hash_key     = "PK"    

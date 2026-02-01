@@ -18,3 +18,14 @@ component "dynamodb" {
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }
+
+component "cognito" {
+  for_each = var.regions
+  source   = "./cognito"
+  inputs = {
+    pool_name    = "PledgeProof-${each.value}"
+    domain_name  = "pledgeproof-${each.value}"
+    default_tags = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
