@@ -13,7 +13,7 @@ component "dynamodb" {
   for_each = var.regions
   source   = "./dynamodb"
   inputs = {
-    table_name   = "PledgeProofs-${each.value}"
+    table_name   = "PledgeProof-${each.value}"
     default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
