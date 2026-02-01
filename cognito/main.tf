@@ -74,4 +74,8 @@ resource "aws_cognito_identity_provider" "google" {
     name     = "name" 
     picture  = "picture"
   }
+
+   lifecycle {
+    ignore_changes = [attribute_mapping, provider_details]
+  }
 }
