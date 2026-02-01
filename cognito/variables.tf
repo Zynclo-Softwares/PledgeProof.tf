@@ -21,5 +21,5 @@ variable "gcp_client_id" {
 variable "gcp_client_secret" { 
     description = "GCP OAuth Client Secret."
     type = string
-    ephemeral = true
+    sensitive = true
 }
