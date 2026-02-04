@@ -1,7 +1,9 @@
 required_providers {
-  aws = { source = "hashicorp/aws", version = "~> 5.7.0" }
+  aws = {
+    source  = "hashicorp/aws"
+    version = "~> 6.0" # ✅ Supports bus DLQ + latest [web:373]
+  }
 }
-
 provider "aws" "configurations" {
   for_each = var.regions
   config {

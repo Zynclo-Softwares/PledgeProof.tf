@@ -22,3 +22,23 @@ resource "aws_cloudwatch_event_bus" "unified_bus" {
   }
   tags = var.default_tags
 }
+
+resource "aws_sqs_queue_policy" "eventbridge_dlq_access" {
+  queue_url = aws_sqs_queue.event_bridge_dlq.id
+  policy = jsonencode({
+    Version = "2012-10-17"  # Bug fix [web:501]
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "events.amazonaws.com"  # EventBridge principal [web:375]
+      }
+      Action   = "sqs:SendMessage"
+      Resource = aws_sqs_queue.event_bridge_dlq.arn
+      Condition = {
+        ArnEquals = {
+          "aws:SourceArn" = aws_cloudwatch_event_bus.unified_bus.arn
+        }
+      }
+    }]
+  })
+}

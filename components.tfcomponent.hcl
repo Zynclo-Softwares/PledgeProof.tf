@@ -38,8 +38,8 @@ component "event_bus_and_rules" {
   source   = "./event-bus"
   inputs = {
     event_bus_name = "pledge-bus-${each.value}"
-    dlq_name = "pledge-bus-dlq-${each.value}"
-    default_tags = var.default_tags
+    dlq_name       = "pledge-bus-dlq-${each.value}"
+    default_tags   = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }

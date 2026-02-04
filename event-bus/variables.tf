@@ -13,3 +13,5 @@ variable "dlq_name" {
   description = "name of the dead letter queue attached to event bus."
   type = string
 }
+
+data "aws_region" "current" {}
