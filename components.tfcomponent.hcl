@@ -32,3 +32,12 @@ component "cognito" {
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }
+
+component "event_bus_and_rules" {
+  for_each = var.regions
+  source   = "./event-bus"
+  inputs = {
+    default_tags = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
