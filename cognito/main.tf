@@ -91,14 +91,14 @@ resource "aws_cognito_user_pool_client" "app_client" {
   allowed_oauth_scopes = ["email", "openid", "profile"]
   callback_urls = [
     "${var.app_scheme}://callback", # mobile app custom scheme
-    "https://${var.domain_name}.auth.${data.aws_region.current.name}.amazoncognito.com/oauth2/idpresponse" ,
+    "https://${var.domain_name}.auth.${data.aws_region.current.region}.amazoncognito.com/oauth2/idpresponse" ,
     "https://www.google.com",  # Testing purpose in web browser
     "exp://localhost:8081",    # ← ADD Expo Go
     "exp://localhost:8081/--/" # ← Expo Go wildcard"
   ]
   logout_urls = [
     "${var.app_scheme}://signout",
-    "https://${var.domain_name}.auth.${data.aws_region.current.name}.amazoncognito.com/logout",
+    "https://${var.domain_name}.auth.${data.aws_region.current.region}.amazoncognito.com/logout",
     "https://www.google.com",           # Web test
     "exp://localhost:8081",             # Expo Go
     "exp://localhost:8081/--/"          # Expo Go wildcard

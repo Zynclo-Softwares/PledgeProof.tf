@@ -1,6 +1,6 @@
 # region value
 locals {
-  region = data.aws_region.current.name
+  region = data.aws_region.current.region
 }
 
 # sqs for dlq
