@@ -33,12 +33,11 @@ component "cognito" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
-component "event_bus_and_rules" {
+component "sqs" {
   for_each = var.regions
-  source   = "./event-bus"
+  source   = "./sqs"
   inputs = {
-    event_bus_name = "pledge-bus-${each.value}"
-    dlq_name       = "pledge-bus-dlq-${each.value}"
+    dlq_name       = "pledge-lambda-dlq-${each.value}"
     default_tags   = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
