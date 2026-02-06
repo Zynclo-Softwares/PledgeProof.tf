@@ -46,7 +46,7 @@ component "sqs" {
 removed {
   for_each = var.regions  # or ["ca-central-1"] if single
   from    = component.event_bus_and_rules[each.key]
-  source  = "./event_bus"  # original source path
+  source  = "./event-bus"  # original source path
   providers = {
     aws = provider.aws.configurations[each.key]
   }
