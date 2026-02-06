@@ -37,17 +37,27 @@ component "sqs" {
   for_each = var.regions
   source   = "./sqs"
   inputs = {
-    dlq_name       = "pledge-lambda-dlq-${each.value}"
-    default_tags   = var.default_tags
+    dlq_name     = "pledge-lambda-dlq-${each.value}"
+    default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
-removed {
-  for_each = var.regions  # or ["ca-central-1"] if single
-  from    = component.event_bus_and_rules[each.key]
-  source  = "./event-bus"  # original source path
-  providers = {
-    aws = provider.aws.configurations[each.key]
+component "alb" {
+  for_each = var.regions
+  source   = "./alb"
+  inputs = {
+    domain_name  = var.server_domain_name
+    default_tags = var.default_tags
   }
+  providers = { aws = provider.aws.configurations[each.value] }
 }
+
+# removed {
+#   for_each = var.regions  # or ["ca-central-1"] if single
+#   from    = component.event_bus_and_rules[each.key]
+#   source  = "./event-bus"  # original source path
+#   providers = {
+#     aws = provider.aws.configurations[each.key]
+#   }
+# }

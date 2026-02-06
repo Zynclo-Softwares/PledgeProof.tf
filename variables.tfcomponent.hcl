@@ -18,3 +18,8 @@ variable "gcp_client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "server_domain_name" {
+  description = "Domain for cert & server"
+  type        = string
+}
