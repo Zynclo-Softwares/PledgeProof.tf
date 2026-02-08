@@ -1,55 +1,42 @@
-# # IAM Roles (required for Fargate)
-# resource "aws_iam_role" "ecs_task_execution_role" {
-#   name = "pledgeproof-task-execution"
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [{
-#       Action = "sts:AssumeRole"
-#       Effect = "Allow"
-#       Principal = {
-#         Service = "ecs-tasks.amazonaws.com"
-#       }
-#     }]
-#   })
-# }
-
-# resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
-#   role       = aws_iam_role.ecs_task_execution_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-# }
-
-# # Task Definition (Fargate monolith)
-# resource "aws_ecs_task_definition" "pledgeproof" {
-#   family                   = "pledgeproof"
-#   network_mode             = "awsvpc"              # Fargate required
-#   requires_compatibilities = ["FARGATE"]           # Fargate launch
-#   cpu                      = 256                   # 0.25 vCPU
-#   memory                   = 512                   # 0.5GB (dev/low traffic)
-
-#   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-
-#   container_definitions = jsonencode([{
-#     name  = "pledgeproof"                          # Matches load_balancer.container_name
-#     image = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/pledgeproof:latest"  # Your ECR URI:tag
-#     essential = true
-#     portMappings = [{
-#       containerPort = 80                          
-#       protocol      = "tcp"
-#     }]
-#     logConfiguration = {
-#       logDriver = "awslogs"
-#       options = {
-#         awslogs-group         = "/ecs/pledgeproof"
-#         awslogs-region        = "ca-central-1"
-#         awslogs-stream-prefix = "ecs"
-#       }
-#     }
-    # healthCheck = {
-    #     command   = ["/bin/httpcheck", "http://localhost:80/health"]
-    #     interval  = 30
-    #     timeout   = 3
-    #     retries   = 3
-    #     startPeriod = 10  # Add startup grace
-    # }
-#   tags = var.default_tags
-# }
+resource "aws_ecs_task_definition" "task_definition" {
+  family                   = var.task_name
+  cpu                      = 256
+  memory                   = 512
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"  # 20-40% cheaper!
+  }
+  execution_role_arn = data.aws_iam_role.ecs_execution_role.arn
+  container_definitions = jsonencode([
+    {
+      name  = var.container_name
+      image = var.ecr_img_uri
+      essential = true
+      portMappings = [
+        {
+          containerPort = var.container_port
+          hostPort      = var.container_port
+          protocol      = "tcp"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/${var.task_name}"
+          "awslogs-region"        = data.aws_region.current.name
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+      healthCheck = {
+        command      = var.health_check_command
+        interval     = 30
+        timeout      = 5
+        retries      = 3
+        startPeriod  = 10
+      }
+    }
+  ])
+  lifecycle { ignore_changes = [container_definitions] }
+}

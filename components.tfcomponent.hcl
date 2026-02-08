@@ -61,6 +61,11 @@ component "compute" {
   inputs = {
     default_tags     = var.default_tags
     ecr_repo_name    = var.repo_name
+    task_name        = "pledgeproof-task-${each.value}"
+    container_name   = "pledgeproof-container"
+    container_port   = 80
+    health_check_command = ["/bin/httpcheck", "http://localhost:80/health"]
+    ecr_img_uri      = "659271373941.dkr.ecr.ca-central-1.amazonaws.com/zynclo-softwares@sha256:3c780a2fa799564eed5ec08800cef52d632305157d050790e92c74c5403603aa"
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }
