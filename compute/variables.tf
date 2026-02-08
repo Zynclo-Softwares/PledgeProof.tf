@@ -35,6 +35,16 @@ variable "ecr_img_uri" {
   type = string
 }
 
+variable "ecs_cluster_name" {
+  description = "Name of the ECS cluster."
+  type        = string
+}
+
+variable "target_group_arn" {
+  description = "ARN of the target group to attach the service to."
+  type        = string
+}
+
 data "aws_region" "current" {}
 
 data "aws_iam_role" "ecs_execution_role" {
