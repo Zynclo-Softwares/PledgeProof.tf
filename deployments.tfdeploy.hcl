@@ -15,6 +15,8 @@ deployment "test" {
     gcp_client_id      = store.varset.pp_secrets.stable.gcp_client_id
     gcp_client_secret  = store.varset.pp_secrets.stable.gcp_client_secret
     server_domain_name = "pledgeproof-server.zynclo.com"
+    alb_name = "pledgeproof-alb"
+    my_ip = "94.156.148.57" # curl ifconfig.me
     default_tags = {
       App         = "PledgeProof"
       Environment = "Test"

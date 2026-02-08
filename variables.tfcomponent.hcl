@@ -23,3 +23,13 @@ variable "server_domain_name" {
   description = "Domain for cert & server"
   type        = string
 }
+
+variable "alb_name" {
+  description = "Name for your load balancer."
+  type        = string
+}
+
+variable "my_ip" {
+  description = "IP address of your PC."
+  type        = string
+}

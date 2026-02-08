@@ -1,3 +1,13 @@
+variable "alb_name" {
+  description = "Name for your load balancer."
+  type = string
+}
+
+variable "my_ip" {
+  description = "ip of your pc."
+  type = string
+}
+
 variable "domain_name" {
   description = "Domain for cert, e.g., pledgeproof.zynclo.com"
   type        = string
@@ -12,4 +22,21 @@ variable "default_tags" {
 data "aws_route53_zone" "zynclo" {
   name         = "zynclo.com"
   private_zone = false
+}
+
+# get default subnet ids for the default vpc that are public
+data "aws_vpc" "default" {
+  default = true
+}
+
+# get all default subnets in the default vpc
+data "aws_subnets" "default_vpc" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
 }
