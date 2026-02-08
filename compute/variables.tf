@@ -59,3 +59,15 @@ data "aws_iam_role" "ecs_execution_role" {
 data "aws_vpc" "default" {
   default = true
 }
+
+# get all default subnets in the default vpc
+data "aws_subnets" "default_vpc" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+}

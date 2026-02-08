@@ -35,8 +35,8 @@ resource "aws_ecs_service" "monolith_service" {
   }
 
   network_configuration {
-    subnets         = local.private_subnet_ids
-    security_groups = [aws_security_group.ecs_service_sg.id]
+    subnets          = data.aws_subnets.default_vpc.ids
+    security_groups  = [aws_security_group.ecs_service_sg.id]
     assign_public_ip = false
   }
 
