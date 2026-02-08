@@ -71,3 +71,21 @@ resource "aws_route53_record" "alb_alias" {
   depends_on = [aws_lb.pledge_alb]
 }
 
+# create an alb target group (for using with a fargate ecs service later)
+resource "aws_lb_target_group" "pledge_tg" {
+    name     = "${var.alb_name}-tg"
+    port     = 80
+    protocol = "HTTP"
+    vpc_id   = data.aws_vpc.default.id
+    target_type = "ip"                           
+    health_check {                               
+      enabled             = true
+      healthy_threshold   = 2
+      interval            = 30
+      path                = "/health"             
+      matcher             = "200"
+      unhealthy_threshold = 2
+      timeout             = 5
+    }
+    tags = var.default_tags
+}
