@@ -1,3 +1,7 @@
+locals {
+  region = data.aws_region.current.name
+}
+
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.task_name
   cpu                      = 256
@@ -25,7 +29,7 @@ resource "aws_ecs_task_definition" "task_definition" {
         logDriver = "awslogs"
         options = {
           "awslogs-group"         = "/ecs/${var.task_name}"
-          "awslogs-region"        = data.aws_region.current.name
+          "awslogs-region"        = local.region  
           "awslogs-stream-prefix" = "ecs"
         }
       }
@@ -39,4 +43,5 @@ resource "aws_ecs_task_definition" "task_definition" {
     }
   ])
   lifecycle { ignore_changes = [container_definitions] }
+  depends_on = [ local.region ]
 }

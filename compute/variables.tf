@@ -37,3 +37,7 @@ variable "ecr_img_uri" {
 
 data "aws_region" "current" {}
 
+data "aws_iam_role" "ecs_execution_role" {
+  name = "ecsTaskExecutionRole"
+}
+
