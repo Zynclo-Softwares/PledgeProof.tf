@@ -58,3 +58,16 @@ resource "aws_lb_listener" "https_listener" {
     tags = var.default_tags
 }
 
+# create an alias record in route53 for the alb
+resource "aws_route53_record" "alb_alias" {
+  zone_id = data.aws_route53_zone.zynclo.zone_id
+  name    = var.domain_name
+  type    = "A"
+  alias {
+    name                   = aws_lb.pledge_alb.dns_name
+    zone_id                = aws_lb.pledge_alb.zone_id
+    evaluate_target_health = true
+  }
+  depends_on = [aws_lb.pledge_alb]
+}
+

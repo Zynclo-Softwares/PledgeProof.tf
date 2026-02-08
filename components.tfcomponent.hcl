@@ -48,8 +48,8 @@ component "alb" {
   source   = "./alb"
   inputs = {
     domain_name  = var.server_domain_name
-    alb_name = var.alb_name
-    my_ip = var.my_ip
+    alb_name     = var.alb_name
+    my_ip        = var.my_ip
     default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
