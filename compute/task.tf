@@ -39,4 +39,5 @@ resource "aws_ecs_task_definition" "task_definition" {
     }
   ])
   lifecycle { ignore_changes = [container_definitions] }
+  depends_on = [ aws_cloudwatch_log_group.service_logs ]
 }
