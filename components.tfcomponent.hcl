@@ -55,6 +55,16 @@ component "alb" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+component "compute" {
+  for_each = var.regions
+  source   = "./compute"
+  inputs = {
+    default_tags     = var.default_tags
+    ecr_repo_name    = var.repo_name
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
+
 # removed {
 #   for_each = var.regions  # or ["ca-central-1"] if single
 #   from    = component.event_bus_and_rules[each.key]

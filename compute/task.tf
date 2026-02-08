@@ -44,12 +44,12 @@
 #         awslogs-stream-prefix = "ecs"
 #       }
 #     }
-#     healthCheck = {
-#       command = ["CMD-SHELL", "curl -f http://localhost/health || exit 1"]
-#       interval    = 30
-#       timeout     = 5
-#       retries     = 3
-#     }
-#   }])
+    # healthCheck = {
+    #     command   = ["/bin/httpcheck", "http://localhost:80/health"]
+    #     interval  = 30
+    #     timeout   = 3
+    #     retries   = 3
+    #     startPeriod = 10  # Add startup grace
+    # }
 #   tags = var.default_tags
 # }
