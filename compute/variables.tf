@@ -40,6 +40,11 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
+variable "alb_sg_id" {
+  description = "Security group ID of the ALB to allow traffic from."
+  type        = string
+}
+
 variable "target_group_arn" {
   description = "ARN of the target group to attach the service to."
   type        = string
@@ -51,3 +56,6 @@ data "aws_iam_role" "ecs_execution_role" {
   name = "ecsTaskExecutionRole"
 }
 
+data "aws_vpc" "default" {
+  default = true
+}

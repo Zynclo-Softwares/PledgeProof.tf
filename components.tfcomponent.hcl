@@ -65,6 +65,7 @@ component "compute" {
     container_name       = "pledgeproof-container"
     ecs_cluster_name     = "zynclo-ecs-cluster-${each.value}"
     target_group_arn     = "${component.alb[each.key].alb_target_group_arn}"
+    alb_sg_id            = "${component.alb[each.key].alb_security_group_id}"
     container_port       = 80
     health_check_command = ["/bin/httpcheck", "http://localhost:80/health"]
     ecr_img_uri          = "659271373941.dkr.ecr.ca-central-1.amazonaws.com/zynclo-softwares@sha256:3c780a2fa799564eed5ec08800cef52d632305157d050790e92c74c5403603aa"

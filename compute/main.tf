@@ -16,8 +16,9 @@ resource "aws_ecs_cluster_capacity_providers" "fargate_providers" {
   }
 }
 
+
 resource "aws_ecs_service" "monolith_service" {
-  name            = "pledgeproof-app"
+  name            = "${var.task_name}-service"
   cluster         = aws_ecs_cluster.cluster.id
   task_definition  = aws_ecs_task_definition.task_definition.arn
   desired_count   = 1
@@ -32,5 +33,15 @@ resource "aws_ecs_service" "monolith_service" {
     container_name   = var.container_name
     container_port   = var.container_port
   }
+
+  network_configuration {
+    subnets         = local.private_subnet_ids
+    security_groups = [aws_security_group.ecs_service_sg.id]
+    assign_public_ip = false
+  }
+
   tags = var.default_tags
+  lifecycle {
+    ignore_changes = [desired_count,task_definition]  # Allow manual scaling without Terraform conflicts
+  }
 }
