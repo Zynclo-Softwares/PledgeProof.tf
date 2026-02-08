@@ -48,12 +48,8 @@ resource "aws_lb_listener" "https_listener" {
     ssl_policy = "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
     certificate_arn = aws_acm_certificate_validation.verified_certificate.certificate_arn 
     default_action {
-        type = "fixed-response"
-        fixed_response {
-            content_type = "text/plain"
-            message_body = "PledgeProof ALB is working!"
-            status_code  = "200"
-        }
+      type             = "forward"
+      target_group_arn = aws_lb_target_group.alb_tg.arn  # ✅ Links ALB→TG
     }
     tags = var.default_tags
 }
