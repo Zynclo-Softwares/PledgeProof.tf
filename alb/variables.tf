@@ -1,3 +1,9 @@
+variable "default_tags" {
+  description = "Default tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
+
 variable "alb_name" {
   description = "Name for your load balancer."
   type = string
@@ -8,15 +14,9 @@ variable "my_ip" {
   type = string
 }
 
-variable "domain_name" {
+variable "alb_domain_name" {
   description = "Domain for cert, e.g., pledgeproof.zynclo.com"
   type        = string
-}
-
-variable "default_tags" {
-  description = "Default tags to apply to resources"
-  type        = map(string)
-  default     = {}
 }
 
 data "aws_route53_zone" "zynclo" {

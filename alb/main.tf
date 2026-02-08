@@ -1,6 +1,6 @@
 # create a security group for the alb
-resource "aws_security_group" "pledge_alb_sg" {
-    name        = "pledge-alb-sg"
+resource "aws_security_group" "alb_sg" {
+    name        = "${var.alb_name}-sg"
     description = "Security group for PledgeProof ALB"
     vpc_id      = data.aws_vpc.default.id
     
@@ -31,22 +31,22 @@ resource "aws_security_group" "pledge_alb_sg" {
 }
 
 # create an alb that uses the cert from cert.tf
-resource "aws_lb" "pledge_alb" {
+resource "aws_lb" "alb" {
    name = var.alb_name
    internal = false 
    load_balancer_type = "application"
-   security_groups = [aws_security_group.pledge_alb_sg.id]
+   security_groups = [aws_security_group.alb_sg.id]
    subnets = data.aws_subnets.default_vpc.ids
    tags = var.default_tags
 }
 
 # create a listener for the alb that listens on 443 and uses the cert from cert.tf
 resource "aws_lb_listener" "https_listener" {
-    load_balancer_arn = aws_lb.pledge_alb.arn
+    load_balancer_arn = aws_lb.alb.arn
     port = 443
     protocol = "HTTPS"
     ssl_policy = "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
-    certificate_arn = aws_acm_certificate_validation.public.certificate_arn 
+    certificate_arn = aws_acm_certificate_validation.verified_certificate.certificate_arn 
     default_action {
         type = "fixed-response"
         fixed_response {
@@ -58,21 +58,37 @@ resource "aws_lb_listener" "https_listener" {
     tags = var.default_tags
 }
 
+# if http then redirect to https
+resource "aws_lb_listener" "http_listener" {
+    load_balancer_arn = aws_lb.alb.arn
+    port = 80
+    protocol = "HTTP"
+    default_action {
+        type = "redirect"
+        redirect {
+            port = "443"
+            protocol = "HTTPS"
+            status_code = "HTTP_301"
+        }
+    }
+    tags = var.default_tags
+}
+
 # create an alias record in route53 for the alb
 resource "aws_route53_record" "alb_alias" {
   zone_id = data.aws_route53_zone.zynclo.zone_id
-  name    = var.domain_name
+  name    = var.alb_domain_name
   type    = "A"
   alias {
-    name                   = aws_lb.pledge_alb.dns_name
-    zone_id                = aws_lb.pledge_alb.zone_id
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
     evaluate_target_health = true
   }
-  depends_on = [aws_lb.pledge_alb]
+  depends_on = [aws_lb.alb]
 }
 
 # create an alb target group (for using with a fargate ecs service later)
-resource "aws_lb_target_group" "pledge_tg" {
+resource "aws_lb_target_group" "alb_tg" {
     name     = "${var.alb_name}-tg"
     port     = 80
     protocol = "HTTP"

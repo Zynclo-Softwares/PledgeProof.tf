@@ -26,7 +26,7 @@ variable "server_domain_name" {
 
 variable "repo_name" {
   description = "ECR repo name."
-  type = string
+  type        = string
 }
 
 variable "alb_name" {
