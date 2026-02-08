@@ -17,7 +17,7 @@ deployment "test" {
     server_domain_name = "pledgeproof-server.zynclo.com"
     alb_name           = "pledgeproof-alb"
     repo_name          = "zynclo-softwares"
-    my_ip              = "94.156.148.57" # curl ifconfig.me
+    my_ip              = "94.156.148.60" # curl ifconfig.me
     default_tags = {
       App         = "PledgeProof"
       Environment = "Test"
