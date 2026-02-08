@@ -10,24 +10,24 @@ resource "aws_ecr_lifecycle_policy" "repository_policy" {
   policy = jsonencode({
     rules = [
       {
-        rulePriority    = 1
-        description     = "Expire untagged images"
+        rulePriority = 1
+        description  = "Expire untagged images > 1 (keep newest)"
         selection = {
-          tagStatus = "untagged"
-          countType = "imageCountMoreThan"
-          countNumber = 0  # Expire ALL untagged (keep 0)
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 1  # ✅ Minimum allowed
         }
         action = {
           type = "expire"
         }
       },
       {
-        rulePriority    = 2
-        description     = "Keep last 5 tagged images"
+        rulePriority = 2
+        description  = "Keep last 5 tagged images"
         selection = {
-          tagStatus = "tagged"
-          countType = "imageCountMoreThan"
-          countNumber = 5  # Keep newest 5, expire rest
+          tagStatus   = "tagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
         }
         action = {
           type = "expire"
