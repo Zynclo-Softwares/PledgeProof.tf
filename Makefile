@@ -1,6 +1,6 @@
 # PledgeProof Terraform Automation
 
-SG_NAME := pledgeproof-alb-sg
+SG_NAME := pledgeproof-alb-test-sg
 
 .PHONY: update-ip
 

@@ -18,7 +18,7 @@ deployment "test" {
     my_ip              = "94.156.148.51" # curl ifconfig.me
     default_tags = {
       App         = "PledgeProof"
-      Environment = "Test"
+      Environment = "test"
     }
   }
 }

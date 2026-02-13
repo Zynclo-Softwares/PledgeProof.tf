@@ -2,8 +2,8 @@ component "s3" {
   for_each = var.regions
   source   = "./s3"
   inputs = {
-    # Unique bucket name (S3 names are global)
-    bucket_name  = "pledgeproof-${each.value}"
+    # S3 names are globally unique — include both region and environment
+    bucket_name  = "pledgeproof-${local.deployment}-${each.value}"
     default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
@@ -13,7 +13,7 @@ component "dynamodb" {
   for_each = var.regions
   source   = "./dynamodb"
   inputs = {
-    table_name   = "PledgeProof"
+    table_name   = "pledgeproof-${local.deployment}"
     default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
@@ -23,8 +23,8 @@ component "cognito" {
   for_each = var.regions
   source   = "./cognito"
   inputs = {
-    pool_name           = "PledgeProof"
-    cognito_domain_name = "pledgeproof-${each.value}"
+    pool_name           = "pledgeproof-${local.deployment}"
+    cognito_domain_name = "pledgeproof-${local.deployment}-${each.value}"
     app_scheme          = "pledgeproofai"
     default_tags        = var.default_tags
     gcp_client_id       = var.gcp_client_id
@@ -37,7 +37,7 @@ component "sqs" {
   for_each = var.regions
   source   = "./sqs"
   inputs = {
-    dlq_name     = "pledge-lambda-dlq"
+    dlq_name     = "pledge-lambda-dlq-${local.deployment}"
     default_tags = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }
@@ -48,7 +48,7 @@ component "alb" {
   source   = "./alb"
   inputs = {
     alb_domain_name = var.server_domain_name
-    alb_name        = "pledgeproof-alb"
+    alb_name        = "pledgeproof-alb-${local.deployment}"
     my_ip           = var.my_ip
     default_tags    = var.default_tags
   }
@@ -61,9 +61,9 @@ component "compute" {
   inputs = {
     default_tags         = var.default_tags
     ecr_repo_name        = "zynclo-softwares"
-    task_name            = "pledgeproof-task"
+    task_name            = "pledgeproof-task-${local.deployment}"
     container_name       = "pledgeproof-container"
-    ecs_cluster_name     = "zynclo-ecs-cluster"
+    ecs_cluster_name     = "zynclo-ecs-cluster-${local.deployment}"
     target_group_arn     = "${component.alb[each.key].alb_target_group_arn}"
     alb_sg_id            = "${component.alb[each.key].alb_security_group_id}"
     container_port       = 80
