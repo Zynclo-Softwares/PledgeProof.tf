@@ -24,16 +24,6 @@ variable "server_domain_name" {
   type        = string
 }
 
-variable "repo_name" {
-  description = "ECR repo name."
-  type        = string
-}
-
-variable "alb_name" {
-  description = "Name for your load balancer."
-  type        = string
-}
-
 variable "my_ip" {
   description = "IP address of your PC."
   type        = string
