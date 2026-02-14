@@ -30,7 +30,8 @@ resource "aws_security_group" "alb_sg" {
     tags = var.default_tags
     # after deployment there should be no drift trigger for ip change since i will use cli to update the ip often
     lifecycle {
-      ignore_changes = [ingress]
+      ignore_changes    = [ingress]
+      create_before_destroy = true
     }
 }
 
