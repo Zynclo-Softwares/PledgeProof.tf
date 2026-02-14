@@ -3,6 +3,15 @@ required_providers {
     source  = "hashicorp/aws"
     version = "~> 6.0" # ✅ Supports bus DLQ + latest [web:373]
   }
+  # TODO: remove after one successful apply — only here to let Terraform drop archive_file from state
+  archive = {
+    source  = "hashicorp/archive"
+    version = "~> 2.0"
+  }
+}
+
+provider "archive" "default" {
+  config {}
 }
 provider "aws" "configurations" {
   for_each = var.regions

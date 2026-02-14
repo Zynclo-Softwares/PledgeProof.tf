@@ -57,7 +57,9 @@ component "lambda" {
     default_tags        = var.default_tags
   }
   providers = {
-    aws = provider.aws.configurations[each.value]
+    aws     = provider.aws.configurations[each.value]
+    # TODO: remove after one successful apply — only here to clear archive_file from state
+    archive = provider.archive.default
   }
 }
 
