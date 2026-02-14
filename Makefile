@@ -2,7 +2,7 @@
 
 SG_NAME := pledgeproof-alb-test-sg
 
-.PHONY: update-ip
+.PHONY: update-ip zip-lambda
 
 # Look up the ALB security group by name, find the existing 443 ingress rule, and update it with your current public IP
 update-ip:
@@ -24,3 +24,8 @@ update-ip:
 		--group-id $(SG_ID) \
 		--security-group-rules "SecurityGroupRuleId=$(RULE_ID),SecurityGroupRule={IpProtocol=tcp,FromPort=443,ToPort=443,CidrIpv4=$(MY_IP)/32,Description=Allow HTTPS from my IP}"
 	@echo "Done. HTTPS ingress on $(SG_NAME) now allows $(MY_IP)"
+
+# Rebuild Lambda code.zip from handler.py (run before pushing changes to handler.py)
+zip-lambda:
+	@cd lambda && zip -j code.zip code/handler.py
+	@echo "Done. lambda/code.zip updated."

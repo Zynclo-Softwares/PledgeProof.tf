@@ -3,14 +3,6 @@ required_providers {
     source  = "hashicorp/aws"
     version = "~> 6.0" # ✅ Supports bus DLQ + latest [web:373]
   }
-  archive = {
-    source  = "hashicorp/archive"
-    version = "~> 2.0"
-  }
-}
-
-provider "archive" "default" {
-  config {}
 }
 provider "aws" "configurations" {
   for_each = var.regions

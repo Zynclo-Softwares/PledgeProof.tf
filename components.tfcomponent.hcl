@@ -57,8 +57,7 @@ component "lambda" {
     default_tags        = var.default_tags
   }
   providers = {
-    archive = provider.archive.default
-    aws     = provider.aws.configurations[each.value]
+    aws = provider.aws.configurations[each.value]
   }
 }
 

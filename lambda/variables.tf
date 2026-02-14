@@ -22,11 +22,3 @@ variable "default_tags" {
   type    = map(string)
   default = {}
 }
-
-terraform {
-  required_providers {
-    archive = {
-      source = "hashicorp/archive"
-    }
-  }
-}

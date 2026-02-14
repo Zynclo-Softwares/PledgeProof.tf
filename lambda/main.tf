@@ -1,9 +1,3 @@
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/code"
-  output_path = "/tmp/lambda-code.zip"
-}
-
 # IAM role for Lambda execution
 resource "aws_iam_role" "lambda_role" {
   name = "${var.function_name}-role"
@@ -48,8 +42,8 @@ resource "aws_lambda_function" "event_proxy" {
   handler          = "handler.handler"
   runtime          = "python3.12"
   timeout          = 15
-  filename         = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  filename         = "${path.module}/code.zip"
+  source_code_hash = filebase64sha256("${path.module}/code.zip")
 
   environment {
     variables = {
