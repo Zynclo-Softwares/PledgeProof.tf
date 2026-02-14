@@ -9,11 +9,6 @@ variable "alb_name" {
   type = string
 }
 
-variable "my_ip" {
-  description = "ip of your pc."
-  type = string
-}
-
 variable "alb_domain_name" {
   description = "Domain for cert, e.g., pledgeproof.zynclo.com"
   type        = string

@@ -29,11 +29,6 @@ variable "cognito_custom_domain" {
   type        = string
 }
 
-variable "my_ip" {
-  description = "IP address of your PC."
-  type        = string
-}
-
 locals {
   deployment = var.default_tags["Environment"]
 }

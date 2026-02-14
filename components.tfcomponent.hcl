@@ -66,7 +66,6 @@ component "alb" {
   inputs = {
     alb_domain_name = var.server_domain_name
     alb_name        = "pledgeproof-alb-${local.deployment}"
-    my_ip           = var.my_ip
     default_tags    = var.default_tags
   }
   providers = { aws = provider.aws.configurations[each.value] }

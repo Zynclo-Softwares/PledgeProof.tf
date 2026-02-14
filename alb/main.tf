@@ -4,20 +4,20 @@ resource "aws_security_group" "alb_sg" {
     description = "Security group for PledgeProof ALB"
     vpc_id      = data.aws_vpc.default.id
     
-    # allow inbound HTTP and HTTPS from my ip only for now
+    # allow inbound HTTP and HTTPS
     ingress {
-        description = "Allow HTTP from my IP"
+        description = "Allow HTTP"
         from_port   = 80
         to_port     = 80
         protocol    = "tcp"
-        cidr_blocks = ["${var.my_ip}/32"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
     ingress {
-        description = "Allow HTTPS from my IP"
+        description = "Allow HTTPS"
         from_port   = 443
         to_port     = 443
         protocol    = "tcp"
-        cidr_blocks = ["${var.my_ip}/32"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
     # allow all outbound (or restrict as needed)
     egress {
@@ -28,9 +28,7 @@ resource "aws_security_group" "alb_sg" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags = var.default_tags
-    # after deployment there should be no drift trigger for ip change since i will use cli to update the ip often
     lifecycle {
-      ignore_changes    = [ingress]
       create_before_destroy = true
     }
 }

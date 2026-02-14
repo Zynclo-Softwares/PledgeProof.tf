@@ -16,7 +16,6 @@ deployment "test" {
     gcp_client_secret     = store.varset.pp_secrets.stable.gcp_client_secret
     server_domain_name    = "pledgeproof-server.zynclo.com"
     cognito_custom_domain = "pledgeproof-auth.zynclo.com"
-    my_ip                 = "94.156.148.51" # curl ifconfig.me
     default_tags = {
       App         = "PledgeProof"
       Environment = "test"
