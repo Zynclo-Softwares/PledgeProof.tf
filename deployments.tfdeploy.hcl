@@ -14,8 +14,9 @@ deployment "test" {
     identity_token     = identity_token.aws.jwt
     gcp_client_id      = store.varset.pp_secrets.stable.gcp_client_id
     gcp_client_secret  = store.varset.pp_secrets.stable.gcp_client_secret
-    server_domain_name = "pledgeproof-server.zynclo.com"
-    my_ip              = "94.156.148.51" # curl ifconfig.me
+    server_domain_name    = "pledgeproof-server.zynclo.com"
+    cognito_custom_domain = "auth.pledgeproof.zynclo.com"
+    my_ip                 = "94.156.148.51" # curl ifconfig.me
     default_tags = {
       App         = "PledgeProof"
       Environment = "test"

@@ -9,9 +9,9 @@ variable "pool_name" {
   type = string
 }
 
-variable "cognito_domain_name" {
-  description = "cognito user pool google oauth redirection domain."
-  type = string 
+variable "cognito_custom_domain" {
+  description = "Custom domain for Cognito OAuth (e.g., auth.pledgeproof.zynclo.com)"
+  type = string
 }
 
 variable "gcp_client_id" {
@@ -30,3 +30,17 @@ variable "app_scheme" {
 }
 
 data "aws_region" "current" {}
+
+data "aws_route53_zone" "zynclo" {
+  name         = "zynclo.com"
+  private_zone = false
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source                = "hashicorp/aws"
+      configuration_aliases = [aws.us_east_1]
+    }
+  }
+}

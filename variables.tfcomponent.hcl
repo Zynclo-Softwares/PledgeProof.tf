@@ -24,6 +24,11 @@ variable "server_domain_name" {
   type        = string
 }
 
+variable "cognito_custom_domain" {
+  description = "Custom domain for Cognito OAuth (e.g., auth.pledgeproof.zynclo.com)"
+  type        = string
+}
+
 variable "my_ip" {
   description = "IP address of your PC."
   type        = string

@@ -54,8 +54,20 @@ resource "aws_cognito_user_pool" "user_pool" {
 }
 
 resource "aws_cognito_user_pool_domain" "cognito_domain" {
-  domain       = var.cognito_domain_name
-  user_pool_id = aws_cognito_user_pool.user_pool.id
+  domain          = var.cognito_custom_domain
+  user_pool_id    = aws_cognito_user_pool.user_pool.id
+  certificate_arn = aws_acm_certificate_validation.cognito_cert_verified.certificate_arn
+}
+
+resource "aws_route53_record" "cognito_custom_domain" {
+  zone_id = data.aws_route53_zone.zynclo.zone_id
+  name    = var.cognito_custom_domain
+  type    = "A"
+  alias {
+    name                   = aws_cognito_user_pool_domain.cognito_domain.cloudfront_distribution
+    zone_id                = "Z2FDTNDATAQYW2" # CloudFront's fixed hosted zone ID
+    evaluate_target_health = false
+  }
 }
 
 resource "aws_cognito_identity_provider" "google" {
@@ -91,14 +103,14 @@ resource "aws_cognito_user_pool_client" "app_client" {
   allowed_oauth_scopes = ["email", "openid", "profile"]
   callback_urls = [
     "${var.app_scheme}://callback", # mobile app custom scheme
-    "https://${var.cognito_domain_name}.auth.${data.aws_region.current.region}.amazoncognito.com/oauth2/idpresponse" ,
+    "https://${var.cognito_custom_domain}/oauth2/idpresponse",
     "https://www.google.com",  # Testing purpose in web browser
-    "exp://localhost:8081",    # ← ADD Expo Go
-    "exp://localhost:8081/--/" # ← Expo Go wildcard"
+    "exp://localhost:8081",    # Expo Go
+    "exp://localhost:8081/--/" # Expo Go wildcard
   ]
   logout_urls = [
     "${var.app_scheme}://signout",
-    "https://${var.cognito_domain_name}.auth.${data.aws_region.current.region}.amazoncognito.com/logout",
+    "https://${var.cognito_custom_domain}/logout",
     "https://www.google.com",           # Web test
     "exp://localhost:8081",             # Expo Go
     "exp://localhost:8081/--/"          # Expo Go wildcard

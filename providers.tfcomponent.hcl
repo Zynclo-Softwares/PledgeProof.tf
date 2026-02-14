@@ -16,3 +16,15 @@ provider "aws" "configurations" {
   }
 }
 
+# Fixed us-east-1 provider for Cognito custom domain ACM cert (CloudFront requirement)
+provider "aws" "us_east_1" {
+  config {
+    region = "us-east-1"
+    assume_role_with_web_identity {
+      role_arn           = var.role_arn
+      web_identity_token = var.identity_token
+    }
+    default_tags { tags = var.default_tags }
+  }
+}
+
