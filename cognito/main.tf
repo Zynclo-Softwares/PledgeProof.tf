@@ -53,10 +53,22 @@ resource "aws_cognito_user_pool" "user_pool" {
   tags = var.default_tags
 }
 
+# Dummy A record for zynclo.com — required by Cognito to validate the parent domain
+# allow_overwrite ensures multiple deployments (test/prod) don't conflict
+resource "aws_route53_record" "parent_domain" {
+  zone_id         = data.aws_route53_zone.zynclo.zone_id
+  name            = "zynclo.com"
+  type            = "A"
+  ttl             = 300
+  records         = ["192.0.2.1"] # RFC 5737 TEST-NET — safe placeholder
+  allow_overwrite = true
+}
+
 resource "aws_cognito_user_pool_domain" "cognito_domain" {
   domain          = var.cognito_custom_domain
   user_pool_id    = aws_cognito_user_pool.user_pool.id
   certificate_arn = aws_acm_certificate_validation.cognito_cert_verified.certificate_arn
+  depends_on      = [aws_route53_record.parent_domain]
 }
 
 resource "aws_route53_record" "cognito_custom_domain" {
