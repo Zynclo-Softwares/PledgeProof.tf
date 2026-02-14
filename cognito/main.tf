@@ -3,7 +3,8 @@ resource "aws_cognito_user_pool" "user_pool" {
   name = var.pool_name
 
   # should be able to sign in or up with email & password
-  username_attributes = ["email"] 
+  username_attributes      = ["email"]
+  auto_verified_attributes = ["email"]
 
   # user attributes (name, email, mail)
   schema {
