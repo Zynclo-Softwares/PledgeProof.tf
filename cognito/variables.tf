@@ -18,6 +18,7 @@ variable "gcp_client_id" {
     description = "GCP OAuth Client ID."
     type = string
 }
+
 variable "gcp_client_secret" { 
     description = "GCP OAuth Client Secret."
     type = string
@@ -26,6 +27,11 @@ variable "gcp_client_secret" {
 
 variable "app_scheme" {
   description = "Where google oauth would return back to as a callback."
+  type        = string
+}
+
+variable "post_confirmation_lambda_arn" {
+  description = "Lambda ARN invoked after user confirmation (manual verify or Google sign-in)"
   type        = string
 }
 

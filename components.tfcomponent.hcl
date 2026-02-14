@@ -23,12 +23,13 @@ component "cognito" {
   for_each = var.regions
   source   = "./cognito"
   inputs = {
-    pool_name             = "pledgeproof-${local.deployment}"
-    cognito_custom_domain = var.cognito_custom_domain
-    app_scheme            = "pledgeproofai"
-    default_tags          = var.default_tags
-    gcp_client_id         = var.gcp_client_id
-    gcp_client_secret     = var.gcp_client_secret
+    pool_name                    = "pledgeproof-${local.deployment}"
+    cognito_custom_domain        = var.cognito_custom_domain
+    app_scheme                   = "pledgeproofai"
+    default_tags                 = var.default_tags
+    gcp_client_id                = var.gcp_client_id
+    gcp_client_secret            = var.gcp_client_secret
+    post_confirmation_lambda_arn = component.lambda[each.key].function_arn
   }
   providers = {
     aws           = provider.aws.configurations[each.value]
