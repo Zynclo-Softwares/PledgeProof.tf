@@ -46,6 +46,22 @@ component "sqs" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+component "lambda" {
+  for_each = var.regions
+  source   = "./lambda"
+  inputs = {
+    function_name       = "pledgeproof-event-proxy-${local.deployment}"
+    server_callback_url = "https://${var.server_domain_name}/webhooks/events"
+    dlq_arn             = component.sqs[each.key].lambda_dlq_arn
+    dlq_url             = component.sqs[each.key].lambda_dlq_url
+    default_tags        = var.default_tags
+  }
+  providers = {
+    archive = provider.archive.default
+    aws     = provider.aws.configurations[each.value]
+  }
+}
+
 component "alb" {
   for_each = var.regions
   source   = "./alb"

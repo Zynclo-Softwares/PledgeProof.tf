@@ -6,3 +6,7 @@ output "lambda_dlq_arn" {
   value = aws_sqs_queue.lambda_dlq.arn
 }
 
+output "lambda_dlq_url" {
+  value = aws_sqs_queue.lambda_dlq.url
+}
+
