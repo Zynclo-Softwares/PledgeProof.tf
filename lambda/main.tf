@@ -1,7 +1,7 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "${path.module}/code"
-  output_path = "${path.module}/code.zip"
+  output_path = "/tmp/lambda-code.zip"
 }
 
 # IAM role for Lambda execution
