@@ -56,11 +56,7 @@ component "lambda" {
     dlq_url             = component.sqs[each.key].lambda_dlq_url
     default_tags        = var.default_tags
   }
-  providers = {
-    aws     = provider.aws.configurations[each.value]
-    # TODO: remove after one successful apply — only here to clear archive_file from state
-    archive = provider.archive.default
-  }
+  providers = { aws = provider.aws.configurations[each.value] }
 }
 
 component "alb" {

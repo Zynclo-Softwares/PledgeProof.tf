@@ -22,12 +22,3 @@ variable "default_tags" {
   type    = map(string)
   default = {}
 }
-
-# TODO: remove after one successful apply — only here to clear archive_file from state
-terraform {
-  required_providers {
-    archive = {
-      source = "hashicorp/archive"
-    }
-  }
-}
