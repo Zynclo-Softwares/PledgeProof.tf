@@ -86,6 +86,6 @@ resource "aws_ecs_task_definition" "task_definition" {
       environment = [for k, v in var.task_env : { name = k, value = v }]
     }
   ])
-  # lifecycle { ignore_changes = [container_definitions] }
+  lifecycle { ignore_changes = [container_definitions] }
   depends_on = [ aws_cloudwatch_log_group.service_logs ]
 }
