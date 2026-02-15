@@ -87,6 +87,9 @@ component "compute" {
     ecr_img_uri          = "659271373941.dkr.ecr.ca-central-1.amazonaws.com/zynclo-softwares@sha256:3c780a2fa799564eed5ec08800cef52d632305157d050790e92c74c5403603aa"
     dynamodb_table_arn   = component.dynamodb[each.key].table_arn
     s3_bucket_arn        = component.s3[each.key].bucket_arn
+    task_env = {
+      UPSTASH_API_KEY = var.upstash_api_key
+    }
   }
   providers = { aws = provider.aws.configurations[each.value] }
 }

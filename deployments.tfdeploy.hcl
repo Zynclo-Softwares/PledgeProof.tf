@@ -16,6 +16,7 @@ deployment "test" {
     gcp_client_secret     = store.varset.pp_secrets.stable.gcp_client_secret
     server_domain_name    = "pledgeproof-server.zynclo.com"
     cognito_custom_domain = "pledgeproof-auth.zynclo.com"
+    upstash_api_key       = store.varset.pp_secrets.stable.upstash_api_key
     default_tags = {
       App         = "PledgeProof"
       Environment = "test"

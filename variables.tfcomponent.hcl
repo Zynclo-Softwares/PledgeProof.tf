@@ -29,6 +29,12 @@ variable "cognito_custom_domain" {
   type        = string
 }
 
+variable "upstash_api_key" {
+  description = "Upstash API key for Redis"
+  type        = string
+  sensitive   = true
+}
+
 locals {
   deployment = var.default_tags["Environment"]
 }

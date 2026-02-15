@@ -60,6 +60,12 @@ variable "s3_bucket_arn" {
   type        = string
 }
 
+variable "task_env" {
+  description = "Environment variables to pass to the container."
+  type        = map(string)
+  default     = {}
+}
+
 data "aws_region" "current" {}
 
 data "aws_iam_role" "ecs_execution_role" {
