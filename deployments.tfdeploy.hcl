@@ -1,25 +1,25 @@
-# identity_token "aws" {
-#   audience = ["aws.workload.identity"]
-# }
+identity_token "aws" {
+  audience = ["aws.workload.identity"]
+}
 
-# store "varset" pp_secrets {
-#   name     = "pp_secrets"
-#   category = "terraform"
-# }
+store "varset" pp_secrets {
+  name     = "pp_secrets"
+  category = "terraform"
+}
 
-# deployment "test" {
-#   inputs = {
-#     regions               = ["ca-central-1"]
-#     role_arn              = "arn:aws:iam::659271373941:role/TerraformAdminAccessOIDC"
-#     identity_token        = identity_token.aws.jwt
-#     gcp_client_id         = store.varset.pp_secrets.stable.gcp_client_id
-#     gcp_client_secret     = store.varset.pp_secrets.stable.gcp_client_secret
-#     server_domain_name    = "pledgeproof-server.zynclo.com"
-#     cognito_custom_domain = "pledgeproof-auth.zynclo.com"
-#     upstash_api_key       = store.varset.pp_secrets.stable.upstash_api_key
-#     default_tags = {
-#       App         = "PledgeProof"
-#       Environment = "test"
-#     }
-#   }
-# }
+deployment "test" {
+  inputs = {
+    regions               = ["ca-central-1"]
+    role_arn              = "arn:aws:iam::659271373941:role/TerraformAdminAccessOIDC"
+    identity_token        = identity_token.aws.jwt
+    gcp_client_id         = store.varset.pp_secrets.stable.gcp_client_id
+    gcp_client_secret     = store.varset.pp_secrets.stable.gcp_client_secret
+    server_domain_name    = "pledgeproof-server.zynclo.com"
+    cognito_custom_domain = "pledgeproof-auth.zynclo.com"
+    upstash_api_key       = store.varset.pp_secrets.stable.upstash_api_key
+    default_tags = {
+      App         = "PledgeProof"
+      Environment = "test"
+    }
+  }
+}
