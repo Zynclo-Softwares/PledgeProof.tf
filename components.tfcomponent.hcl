@@ -60,36 +60,36 @@ component "lambda" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
-component "alb" {
-  for_each = var.regions
-  source   = "./alb"
-  inputs = {
-    alb_domain_name = var.server_domain_name
-    alb_name        = "pledgeproof-alb-${local.deployment}"
-    default_tags    = var.default_tags
-  }
-  providers = { aws = provider.aws.configurations[each.value] }
-}
+# component "alb" {
+#   for_each = var.regions
+#   source   = "./alb"
+#   inputs = {
+#     alb_domain_name = var.server_domain_name
+#     alb_name        = "pledgeproof-alb-${local.deployment}"
+#     default_tags    = var.default_tags
+#   }
+#   providers = { aws = provider.aws.configurations[each.value] }
+# }
 
-component "compute" {
-  for_each = var.regions
-  source   = "./compute"
-  inputs = {
-    default_tags         = var.default_tags
-    ecr_repo_name        = "zynclo-softwares"
-    task_name            = "pledgeproof-task-${local.deployment}"
-    container_name       = "pledgeproof-container"
-    ecs_cluster_name     = "zynclo-ecs-cluster-${local.deployment}"
-    target_group_arn     = "${component.alb[each.key].alb_target_group_arn}"
-    alb_sg_id            = "${component.alb[each.key].alb_security_group_id}"
-    container_port       = 80
-    health_check_command = ["/bin/httpcheck", "http://localhost:80/health"]
-    ecr_img_uri          = "659271373941.dkr.ecr.ca-central-1.amazonaws.com/zynclo-softwares@sha256:3c780a2fa799564eed5ec08800cef52d632305157d050790e92c74c5403603aa"
-    dynamodb_table_arn   = component.dynamodb[each.key].table_arn
-    s3_bucket_arn        = component.s3[each.key].bucket_arn
-    task_env = {
-      UPSTASH_API_KEY = var.upstash_api_key
-    }
-  }
-  providers = { aws = provider.aws.configurations[each.value] }
-}
+# component "compute" {
+#   for_each = var.regions
+#   source   = "./compute"
+#   inputs = {
+#     default_tags         = var.default_tags
+#     ecr_repo_name        = "zynclo-softwares"
+#     task_name            = "pledgeproof-task-${local.deployment}"
+#     container_name       = "pledgeproof-container"
+#     ecs_cluster_name     = "zynclo-ecs-cluster-${local.deployment}"
+#     target_group_arn     = "${component.alb[each.key].alb_target_group_arn}"
+#     alb_sg_id            = "${component.alb[each.key].alb_security_group_id}"
+#     container_port       = 80
+#     health_check_command = ["/bin/httpcheck", "http://localhost:80/health"]
+#     ecr_img_uri          = "659271373941.dkr.ecr.ca-central-1.amazonaws.com/zynclo-softwares@sha256:3c780a2fa799564eed5ec08800cef52d632305157d050790e92c74c5403603aa"
+#     dynamodb_table_arn   = component.dynamodb[each.key].table_arn
+#     s3_bucket_arn        = component.s3[each.key].bucket_arn
+#     task_env = {
+#       UPSTASH_API_KEY = var.upstash_api_key
+#     }
+#   }
+#   providers = { aws = provider.aws.configurations[each.value] }
+# }
