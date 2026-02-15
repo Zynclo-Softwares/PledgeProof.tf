@@ -1,3 +1,49 @@
+# IAM role for the application container (DynamoDB + S3 access)
+resource "aws_iam_role" "task_role" {
+  name = "${var.task_name}-task-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "ecs-tasks.amazonaws.com" }
+    }]
+  })
+  tags = var.default_tags
+}
+
+resource "aws_iam_role_policy" "task_dynamodb" {
+  name = "${var.task_name}-dynamodb"
+  role = aws_iam_role.task_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = "dynamodb:*"
+      Resource = [
+        var.dynamodb_table_arn,
+        "${var.dynamodb_table_arn}/index/*"
+      ]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "task_s3" {
+  name = "${var.task_name}-s3"
+  role = aws_iam_role.task_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = "s3:*"
+      Resource = [
+        var.s3_bucket_arn,
+        "${var.s3_bucket_arn}/*"
+      ]
+    }]
+  })
+}
+
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.task_name
   cpu                      = 256
@@ -9,6 +55,7 @@ resource "aws_ecs_task_definition" "task_definition" {
     cpu_architecture        = "ARM64"  # 20-40% cheaper!
   }
   execution_role_arn = data.aws_iam_role.ecs_execution_role.arn
+  task_role_arn      = aws_iam_role.task_role.arn
   container_definitions = jsonencode([
     {
       name  = var.container_name
