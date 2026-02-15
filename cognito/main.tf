@@ -143,6 +143,8 @@ resource "aws_cognito_user_pool_client" "app_client" {
   ]
 
   prevent_user_existence_errors = "ENABLED"
+
+  depends_on = [aws_cognito_identity_provider.google]
 }
 
 # Allow Cognito to invoke the event proxy Lambda
