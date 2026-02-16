@@ -120,6 +120,7 @@ resource "aws_cognito_user_pool_client" "app_client" {
   allowed_oauth_flows = ["code"]
   allowed_oauth_scopes = ["email", "openid", "profile"]
   callback_urls = [
+    "${var.app_scheme}://",         # bare scheme (Expo dev build)
     "${var.app_scheme}://callback", # mobile app custom scheme
     "https://${var.cognito_custom_domain}/oauth2/idpresponse",
     "https://www.google.com",  # Testing purpose in web browser
@@ -127,6 +128,7 @@ resource "aws_cognito_user_pool_client" "app_client" {
     "exp://localhost:8081/--/" # Expo Go wildcard
   ]
   logout_urls = [
+    "${var.app_scheme}://",
     "${var.app_scheme}://signout",
     "https://${var.cognito_custom_domain}/logout",
     "https://www.google.com",           # Web test
