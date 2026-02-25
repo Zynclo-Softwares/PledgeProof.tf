@@ -60,6 +60,20 @@ component "lambda" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+component "dinov2" {
+  for_each = var.regions
+  source   = "./dinov2-ml"
+  inputs = {
+    function_name = "pledgeproof-dinov2-${local.deployment}"
+    ecr_repo_name = "pledgeproof-dinov2"
+    image_tag     = "latest"
+    memory_size   = 1536
+    timeout       = 30
+    default_tags  = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
+
 # component "alb" {
 #   for_each = var.regions
 #   source   = "./alb"
