@@ -39,7 +39,7 @@ $(MODEL_FILE):
 # ── Build Docker image ──
 build: $(MODEL_FILE)
 	@echo "🐳 Building Docker image $(ECR_REPO):$(IMAGE_TAG) (linux/amd64)..."
-	@docker buildx build --platform linux/amd64 -t $(ECR_REPO):$(IMAGE_TAG) src/
+	@docker buildx build --platform linux/amd64 --provenance=false --output type=docker -t $(ECR_REPO):$(IMAGE_TAG) src/
 	@echo "✓  Image built"
 
 # ── Login to ECR ──

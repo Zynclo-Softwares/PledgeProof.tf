@@ -4,7 +4,7 @@
 # The model is baked into the image — no S3 download on cold start.
 # ────────────────────────────────────────────────────────────────────────────
 
-FROM --platform=linux/amd64 public.ecr.aws/lambda/python:3.12
+FROM public.ecr.aws/lambda/python:3.12
 
 # Install Python dependencies
 COPY requirements.txt .
