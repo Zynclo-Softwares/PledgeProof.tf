@@ -56,7 +56,12 @@ variable "dynamodb_table_arn" {
 }
 
 variable "s3_bucket_arn" {
-  description = "ARN of the S3 bucket the task can access."
+  description = "S3 bucket ARN for storage access"
+  type        = string
+}
+
+variable "dinov2_lambda_arn" {
+  description = "ARN of the DINOv2 Lambda function for image verification"
   type        = string
 }
 

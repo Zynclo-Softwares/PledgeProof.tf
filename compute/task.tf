@@ -44,6 +44,32 @@ resource "aws_iam_role_policy" "task_s3" {
   })
 }
 
+resource "aws_iam_role_policy" "task_bedrock" {
+  name = "${var.task_name}-bedrock"
+  role = aws_iam_role.task_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["bedrock:InvokeModel"]
+      Resource = "arn:aws:bedrock:*::foundation-model/anthropic.*"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "task_lambda" {
+  name = "${var.task_name}-lambda"
+  role = aws_iam_role.task_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["lambda:InvokeFunction"]
+      Resource = var.dinov2_lambda_arn
+    }]
+  })
+}
+
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.task_name
   cpu                      = 256
