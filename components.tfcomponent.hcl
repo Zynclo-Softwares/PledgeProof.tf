@@ -103,7 +103,7 @@ component "dinov2" {
 #     s3_bucket_arn        = component.s3[each.key].bucket_arn
 #     dinov2_lambda_arn    = component.dinov2[each.key].function_arn
 #     task_env = {
-#       UPSTASH_API_KEY = var.upstash_api_key
+#       QSTASH_TOKEN = var.qtash_token
 #     }
 #   }
 #   providers = { aws = provider.aws.configurations[each.value] }
