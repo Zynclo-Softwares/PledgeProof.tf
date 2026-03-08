@@ -73,9 +73,10 @@ resource "aws_cognito_user_pool_domain" "cognito_domain" {
 }
 
 resource "aws_route53_record" "cognito_custom_domain" {
-  zone_id = data.aws_route53_zone.zynclo.zone_id
-  name    = var.cognito_custom_domain
-  type    = "A"
+  zone_id         = data.aws_route53_zone.zynclo.zone_id
+  name            = var.cognito_custom_domain
+  type            = "A"
+  allow_overwrite = true
   alias {
     name                   = aws_cognito_user_pool_domain.cognito_domain.cloudfront_distribution
     zone_id                = "Z2FDTNDATAQYW2" # CloudFront's fixed hosted zone ID

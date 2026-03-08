@@ -75,9 +75,10 @@ resource "aws_lb_listener" "http_listener" {
 
 # create an alias record in route53 for the alb
 resource "aws_route53_record" "alb_alias" {
-  zone_id = data.aws_route53_zone.zynclo.zone_id
-  name    = var.alb_domain_name
-  type    = "A"
+  zone_id         = data.aws_route53_zone.zynclo.zone_id
+  name            = var.alb_domain_name
+  type            = "A"
+  allow_overwrite = true
   alias {
     name                   = aws_lb.alb.dns_name
     zone_id                = aws_lb.alb.zone_id
