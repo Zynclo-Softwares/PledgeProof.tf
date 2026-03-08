@@ -37,15 +37,15 @@ component "cognito" {
 }
 
 removed {
-  from   = component.sqs
-  source = "./sqs"
+  from     = component.sqs[each.value]
+  source   = "./sqs"
   providers = { aws = provider.aws.configurations[each.value] }
   for_each = var.regions
 }
 
 removed {
-  from   = component.lambda
-  source = "./lambda"
+  from     = component.lambda[each.value]
+  source   = "./lambda"
   providers = { aws = provider.aws.configurations[each.value] }
   for_each = var.regions
 }
