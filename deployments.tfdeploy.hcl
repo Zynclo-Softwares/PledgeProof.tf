@@ -14,8 +14,8 @@ deployment "prod" {
     identity_token             = identity_token.aws.jwt
     gcp_client_id              = store.varset.pp_secrets.stable.gcp_client_id
     gcp_client_secret          = store.varset.pp_secrets.stable.gcp_client_secret
-    cognito_custom_domain      = "auth.pledgeproof.com"
-    server_domain_name         = "api.pledgeproof.com"
+    cognito_custom_domain      = "pledgeproof-auth.zynclo.com"
+    server_domain_name         = "api.pledgeproof.com.zynclo.com"
     qstash_token               = store.varset.pp_secrets.stable.qstash_token
     qstash_current_signing_key = store.varset.pp_secrets.stable.qstash_current_signing_key
     qstash_next_signing_key    = store.varset.pp_secrets.stable.qstash_next_signing_key
