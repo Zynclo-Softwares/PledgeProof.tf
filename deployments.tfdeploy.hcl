@@ -28,20 +28,20 @@ deployment "prod" {
     revenuecat_api_key    = store.varset.pp_secrets.stable.revenuecat_api_key
     enable_dev_table      = true
 
-    # DINOv2 Lambda tuning (defaults: 1536 MB, 30s, "latest")
-    # dinov2_memory_size = 1536
-    # dinov2_timeout     = 30
-    # dinov2_image_tag   = "latest"
+    // DINOv2 Lambda tuning (defaults: 1536 MB, 30s, "latest")
+    dinov2_memory_size = 1536
+    dinov2_timeout     = 30
+    dinov2_image_tag   = "latest"
 
-    # Compute / ECS tuning (defaults: 256 CPU, 512 MB, max 1 task)
-    # compute_cpu       = 256
-    # compute_memory    = 512
-    # compute_max_count = 1
+    // Compute / ECS tuning (defaults: 256 CPU, 512 MB, max 1 task)
+    compute_cpu       = 256
+    compute_memory    = 512
+    compute_max_count = 1
 
-    # DynamoDB tuning (default: on-demand)
-    # dynamodb_billing_mode   = "PAY_PER_REQUEST"
-    # dynamodb_read_capacity  = 0
-    # dynamodb_write_capacity = 0
+    // DynamoDB tuning (default: on-demand)
+    dynamodb_billing_mode   = "PAY_PER_REQUEST"
+    dynamodb_read_capacity  = 0
+    dynamodb_write_capacity = 0
 
     default_tags = {
       App         = "PledgeProof"
