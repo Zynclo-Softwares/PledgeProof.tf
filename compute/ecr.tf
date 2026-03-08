@@ -1,7 +1,7 @@
 # create a private ecr repository
 resource "aws_ecr_repository" "image_repository" {
     name = var.ecr_repo_name
-    image_tag_mutability = "IMMUTABLE"
+    image_tag_mutability = "MUTABLE"
     force_delete = true
     tags = var.default_tags
 }
