@@ -36,8 +36,19 @@ component "cognito" {
   }
 }
 
-# SQS and Lambda (event-proxy) removed — user creation no longer relies on
-# Cognito post-confirmation webhook events.
+removed {
+  from   = component.sqs
+  source = "./sqs"
+  providers = { aws = provider.aws.configurations[each.value] }
+  for_each = var.regions
+}
+
+removed {
+  from   = component.lambda
+  source = "./lambda"
+  providers = { aws = provider.aws.configurations[each.value] }
+  for_each = var.regions
+}
 
 component "dinov2" {
   for_each = var.regions
