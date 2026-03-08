@@ -15,7 +15,6 @@ deployment "prod" {
     gcp_client_id              = store.varset.pp_secrets.stable.gcp_client_id
     gcp_client_secret          = store.varset.pp_secrets.stable.gcp_client_secret
     cognito_custom_domain      = "auth.pledgeproof.com"
-    upstash_api_key            = store.varset.pp_secrets.stable.upstash_api_key
     server_domain_name         = "api.pledgeproof.com"
     qstash_token               = store.varset.pp_secrets.stable.qstash_token
     qstash_current_signing_key = store.varset.pp_secrets.stable.qstash_current_signing_key

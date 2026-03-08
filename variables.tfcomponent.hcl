@@ -24,12 +24,6 @@ variable "cognito_custom_domain" {
   type        = string
 }
 
-variable "upstash_api_key" {
-  description = "Upstash API key for Redis"
-  type        = string
-  sensitive   = true
-}
-
 variable "server_domain_name" {
   description = "Domain for the server ALB (e.g., api.pledgeproof.com)"
   type        = string
