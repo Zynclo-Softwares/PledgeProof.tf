@@ -46,11 +46,6 @@ resource "aws_cognito_user_pool" "user_pool" {
     email_subject        = "Pledge Proof - Verify Email"
   }
 
-  # invoke Lambda with user profile after confirmation
-  lambda_config {
-    post_confirmation = var.post_confirmation_lambda_arn
-  }
-
   lifecycle {
     ignore_changes = [ schema ]
   }
@@ -149,11 +144,3 @@ resource "aws_cognito_user_pool_client" "app_client" {
   depends_on = [aws_cognito_identity_provider.google]
 }
 
-# Allow Cognito to invoke the event proxy Lambda
-resource "aws_lambda_permission" "cognito_post_confirmation" {
-  statement_id  = "AllowCognitoInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = var.post_confirmation_lambda_arn
-  principal     = "cognito-idp.amazonaws.com"
-  source_arn    = aws_cognito_user_pool.user_pool.arn
-}

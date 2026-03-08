@@ -23,13 +23,12 @@ component "cognito" {
   for_each = var.regions
   source   = "./cognito"
   inputs = {
-    pool_name                    = "pledgeproof-${local.deployment}"
-    cognito_custom_domain        = var.cognito_custom_domain
-    app_scheme                   = "pledgeproofai"
-    default_tags                 = var.default_tags
-    gcp_client_id                = var.gcp_client_id
-    gcp_client_secret            = var.gcp_client_secret
-    post_confirmation_lambda_arn = component.lambda[each.key].function_arn
+    pool_name             = "pledgeproof-${local.deployment}"
+    cognito_custom_domain = var.cognito_custom_domain
+    app_scheme            = "pledgeproofai"
+    default_tags          = var.default_tags
+    gcp_client_id         = var.gcp_client_id
+    gcp_client_secret     = var.gcp_client_secret
   }
   providers = {
     aws           = provider.aws.configurations[each.value]
@@ -37,28 +36,8 @@ component "cognito" {
   }
 }
 
-component "sqs" {
-  for_each = var.regions
-  source   = "./sqs"
-  inputs = {
-    dlq_name     = "pledge-lambda-dlq-${local.deployment}"
-    default_tags = var.default_tags
-  }
-  providers = { aws = provider.aws.configurations[each.value] }
-}
-
-component "lambda" {
-  for_each = var.regions
-  source   = "./lambda"
-  inputs = {
-    function_name       = "pledgeproof-event-proxy-${local.deployment}"
-    server_callback_url = "https://${var.server_domain_name}/webhooks/events"
-    dlq_arn             = component.sqs[each.key].lambda_dlq_arn
-    dlq_url             = component.sqs[each.key].lambda_dlq_url
-    default_tags        = var.default_tags
-  }
-  providers = { aws = provider.aws.configurations[each.value] }
-}
+# SQS and Lambda (event-proxy) removed — user creation no longer relies on
+# Cognito post-confirmation webhook events.
 
 component "dinov2" {
   for_each = var.regions

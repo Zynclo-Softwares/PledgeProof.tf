@@ -30,11 +30,6 @@ variable "app_scheme" {
   type        = string
 }
 
-variable "post_confirmation_lambda_arn" {
-  description = "Lambda ARN invoked after user confirmation (manual verify or Google sign-in)"
-  type        = string
-}
-
 data "aws_region" "current" {}
 
 data "aws_route53_zone" "zynclo" {

@@ -19,11 +19,6 @@ variable "gcp_client_secret" {
   sensitive   = true
 }
 
-variable "server_domain_name" {
-  description = "Domain for cert & server"
-  type        = string
-}
-
 variable "cognito_custom_domain" {
   description = "Custom domain for Cognito OAuth (e.g., auth.pledgeproof.zynclo.com)"
   type        = string
