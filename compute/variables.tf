@@ -30,10 +30,7 @@ variable "health_check_command" {
   type = list(string)
 }
 
-variable "ecr_img_uri" {
-  description = "the image to deploy"
-  type = string
-}
+
 
 variable "ecs_cluster_name" {
   description = "Name of the ECS cluster."

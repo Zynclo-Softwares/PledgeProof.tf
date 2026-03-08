@@ -81,25 +81,24 @@ component "compute" {
     task_memory          = var.compute_memory
     max_count            = var.compute_max_count
     health_check_command = ["/bin/httpcheck", "http://localhost:80/health"]
-    ecr_img_uri          = "${component.compute[each.key].ecr_repo_uri}:latest"
     dynamodb_table_arn   = component.dynamodb[each.key].table_arn
     s3_bucket_arn        = component.s3[each.key].bucket_arn
     dinov2_lambda_arn    = component.dinov2[each.key].function_arn
     task_env = {
-      QSTASH_TOKEN                = var.qstash_token
-      QSTASH_CURRENT_SIGNING_KEY  = var.qstash_current_signing_key
-      QSTASH_NEXT_SIGNING_KEY     = var.qstash_next_signing_key
-      ADMIN_PASS                  = var.admin_pass
-      GITHUB_APP_ID               = var.github_app_id
-      GITHUB_INSTALLATION_ID      = var.github_installation_id
-      GITHUB_PRIVATE_KEY_PATH     = var.github_private_key
-      GITHUB_WEBHOOK_SECRET       = var.github_webhook_secret
-      REVENUECAT_API_KEY          = var.revenuecat_api_key
-      DYNAMO_TABLE                = component.dynamodb[each.key].table_name
-      S3_BUCKET                   = component.s3[each.key].bucket_id
-      DINOV2_FUNCTION_NAME        = component.dinov2[each.key].function_name
-      COGNITO_USER_POOL_ID        = component.cognito[each.key].user_pool_id
-      SERVER_URL                  = "https://${var.server_domain_name}"
+      QSTASH_TOKEN               = var.qstash_token
+      QSTASH_CURRENT_SIGNING_KEY = var.qstash_current_signing_key
+      QSTASH_NEXT_SIGNING_KEY    = var.qstash_next_signing_key
+      ADMIN_PASS                 = var.admin_pass
+      GITHUB_APP_ID              = var.github_app_id
+      GITHUB_INSTALLATION_ID     = var.github_installation_id
+      GITHUB_PRIVATE_KEY_PATH    = var.github_private_key
+      GITHUB_WEBHOOK_SECRET      = var.github_webhook_secret
+      REVENUECAT_API_KEY         = var.revenuecat_api_key
+      DYNAMO_TABLE               = component.dynamodb[each.key].table_name
+      S3_BUCKET                  = component.s3[each.key].bucket_id
+      DINOV2_FUNCTION_NAME       = component.dinov2[each.key].function_name
+      COGNITO_USER_POOL_ID       = component.cognito[each.key].user_pool_id
+      SERVER_URL                 = "https://${var.server_domain_name}"
     }
   }
   providers = { aws = provider.aws.configurations[each.value] }

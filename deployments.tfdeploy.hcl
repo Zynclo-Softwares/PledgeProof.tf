@@ -9,24 +9,24 @@ store "varset" pp_secrets {
 
 deployment "prod" {
   inputs = {
-    regions               = ["ca-central-1"]
-    role_arn              = "arn:aws:iam::659271373941:role/TerraformAdminAccessOIDC"
-    identity_token        = identity_token.aws.jwt
-    gcp_client_id         = store.varset.pp_secrets.stable.gcp_client_id
-    gcp_client_secret     = store.varset.pp_secrets.stable.gcp_client_secret
-    cognito_custom_domain = "auth.pledgeproof.com"
-    upstash_api_key       = store.varset.pp_secrets.stable.upstash_api_key
-    server_domain_name    = "api.pledgeproof.com"
-    qstash_token          = store.varset.pp_secrets.stable.qstash_token
+    regions                    = ["ca-central-1"]
+    role_arn                   = "arn:aws:iam::659271373941:role/TerraformAdminAccessOIDC"
+    identity_token             = identity_token.aws.jwt
+    gcp_client_id              = store.varset.pp_secrets.stable.gcp_client_id
+    gcp_client_secret          = store.varset.pp_secrets.stable.gcp_client_secret
+    cognito_custom_domain      = "auth.pledgeproof.com"
+    upstash_api_key            = store.varset.pp_secrets.stable.upstash_api_key
+    server_domain_name         = "api.pledgeproof.com"
+    qstash_token               = store.varset.pp_secrets.stable.qstash_token
     qstash_current_signing_key = store.varset.pp_secrets.stable.qstash_current_signing_key
     qstash_next_signing_key    = store.varset.pp_secrets.stable.qstash_next_signing_key
-    admin_pass            = store.varset.pp_secrets.stable.admin_pass
-    github_app_id         = store.varset.pp_secrets.stable.github_app_id
-    github_installation_id = store.varset.pp_secrets.stable.github_installation_id
-    github_private_key    = store.varset.pp_secrets.stable.github_private_key
-    github_webhook_secret = store.varset.pp_secrets.stable.github_webhook_secret
-    revenuecat_api_key    = store.varset.pp_secrets.stable.revenuecat_api_key
-    enable_dev_table      = true
+    admin_pass                 = store.varset.pp_secrets.stable.admin_pass
+    github_app_id              = store.varset.pp_secrets.stable.github_app_id
+    github_installation_id     = store.varset.pp_secrets.stable.github_installation_id
+    github_private_key         = store.varset.pp_secrets.stable.github_private_key
+    github_webhook_secret      = store.varset.pp_secrets.stable.github_webhook_secret
+    revenuecat_api_key         = store.varset.pp_secrets.stable.revenuecat_api_key
+    enable_dev_table           = true
 
     // DINOv2 Lambda tuning (defaults: 1536 MB, 30s, "latest")
     dinov2_memory_size = 1536
