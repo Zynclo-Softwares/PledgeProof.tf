@@ -118,7 +118,6 @@ resource "aws_cognito_user_pool_client" "app_client" {
     "${var.app_scheme}://",         # bare scheme (Expo dev build)
     "${var.app_scheme}://callback", # mobile app custom scheme
     "https://${var.cognito_custom_domain}/oauth2/idpresponse",
-    "https://www.google.com",  # Testing purpose in web browser
     "exp://localhost:8081",    # Expo Go
     "exp://localhost:8081/--/" # Expo Go wildcard
   ]
@@ -126,7 +125,6 @@ resource "aws_cognito_user_pool_client" "app_client" {
     "${var.app_scheme}://",
     "${var.app_scheme}://signout",
     "https://${var.cognito_custom_domain}/logout",
-    "https://www.google.com",           # Web test
     "exp://localhost:8081",             # Expo Go
     "exp://localhost:8081/--/"          # Expo Go wildcard
   ]

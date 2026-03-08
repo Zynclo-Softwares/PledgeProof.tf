@@ -19,7 +19,16 @@ resource "aws_iam_role_policy" "task_dynamodb" {
     Version = "2012-10-17"
     Statement = [{
       Effect   = "Allow"
-      Action   = "dynamodb:*"
+      Action = [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+      ]
       Resource = [
         var.dynamodb_table_arn,
         "${var.dynamodb_table_arn}/index/*"
@@ -35,7 +44,12 @@ resource "aws_iam_role_policy" "task_s3" {
     Version = "2012-10-17"
     Statement = [{
       Effect   = "Allow"
-      Action   = "s3:*"
+      Action = [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+      ]
       Resource = [
         var.s3_bucket_arn,
         "${var.s3_bucket_arn}/*"

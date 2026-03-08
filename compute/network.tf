@@ -1,4 +1,4 @@
-# securoty group for ecs service to allow traffic from alb
+# security group for ecs service to allow traffic from alb
 resource "aws_security_group" "ecs_service_sg" {
     name        = "${var.task_name}-service-sg"
     description = "Allow traffic from ALB to ECS service"

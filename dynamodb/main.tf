@@ -3,6 +3,8 @@ resource "aws_dynamodb_table" "table" {
   
   hash_key     = "PK"    
   range_key    = "SK"    
+
+  deletion_protection_enabled = true
   
   # Define ONLY your keys here—no JSON fields!
   attribute {
