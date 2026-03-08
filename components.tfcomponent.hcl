@@ -99,6 +99,7 @@ component "compute" {
       DINOV2_FUNCTION_NAME       = component.dinov2[each.key].function_name
       COGNITO_USER_POOL_ID       = component.cognito[each.key].user_pool_id
       SERVER_URL                 = "https://${var.server_domain_name}"
+      ENV                        = "prod"
     }
   }
   providers = { aws = provider.aws.configurations[each.value] }
