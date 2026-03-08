@@ -65,6 +65,24 @@ variable "dinov2_lambda_arn" {
   type        = string
 }
 
+variable "task_cpu" {
+  description = "Fargate task CPU units (256, 512, 1024, 2048, 4096)."
+  type        = number
+  default     = 256
+}
+
+variable "task_memory" {
+  description = "Fargate task memory (MB)."
+  type        = number
+  default     = 512
+}
+
+variable "max_count" {
+  description = "Maximum number of ECS tasks for auto-scaling."
+  type        = number
+  default     = 1
+}
+
 variable "task_env" {
   description = "Environment variables to pass to the container."
   type        = map(string)

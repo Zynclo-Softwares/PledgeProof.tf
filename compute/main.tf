@@ -45,3 +45,31 @@ resource "aws_ecs_service" "monolith_service" {
     ignore_changes = [desired_count,task_definition]  # Allow manual scaling without Terraform conflicts
   }
 }
+
+# Auto-scaling target + policy (only active when max_count > 1)
+resource "aws_appautoscaling_target" "ecs" {
+  count              = var.max_count > 1 ? 1 : 0
+  max_capacity       = var.max_count
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.monolith_service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "ecs_cpu" {
+  count              = var.max_count > 1 ? 1 : 0
+  name               = "${var.task_name}-cpu-scaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs[0].service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    target_value       = 70
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 60
+  }
+}

@@ -72,8 +72,8 @@ resource "aws_iam_role_policy" "task_lambda" {
 
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.task_name
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   runtime_platform {
