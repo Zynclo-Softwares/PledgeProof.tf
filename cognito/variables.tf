@@ -30,6 +30,27 @@ variable "app_scheme" {
   type        = string
 }
 
+variable "apple_services_id" {
+  description = "Apple Services ID for Sign In with Apple."
+  type        = string
+}
+
+variable "apple_team_id" {
+  description = "Apple Team ID."
+  type        = string
+}
+
+variable "apple_key_id" {
+  description = "Apple Key ID for Sign In with Apple."
+  type        = string
+}
+
+variable "apple_private_key" {
+  description = "Apple private key (.p8) contents for Sign In with Apple."
+  type        = string
+  sensitive   = true
+}
+
 data "aws_region" "current" {}
 
 data "aws_route53_zone" "zynclo" {

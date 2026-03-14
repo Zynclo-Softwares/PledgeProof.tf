@@ -24,6 +24,27 @@ variable "cognito_custom_domain" {
   type        = string
 }
 
+variable "apple_services_id" {
+  description = "Apple Services ID for Sign In with Apple."
+  type        = string
+}
+
+variable "apple_team_id" {
+  description = "Apple Team ID."
+  type        = string
+}
+
+variable "apple_key_id" {
+  description = "Apple Key ID for Sign In with Apple."
+  type        = string
+}
+
+variable "apple_private_key" {
+  description = "Apple private key (.p8) contents for Sign In with Apple."
+  type        = string
+  sensitive   = true
+}
+
 variable "server_domain_name" {
   description = "Domain for the server ALB (e.g., api.pledgeproof.com)"
   type        = string

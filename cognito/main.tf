@@ -106,6 +106,29 @@ resource "aws_cognito_identity_provider" "google" {
   }
 }
 
+resource "aws_cognito_identity_provider" "apple" {
+  user_pool_id  = aws_cognito_user_pool.user_pool.id
+  provider_name = "SignInWithApple"
+  provider_type = "SignInWithApple"
+
+  provider_details = {
+    client_id        = var.apple_services_id
+    team_id          = var.apple_team_id
+    key_id           = var.apple_key_id
+    private_key      = var.apple_private_key
+    authorize_scopes = "email name"
+  }
+
+  attribute_mapping = {
+    email = "email"
+    name  = "firstName"
+  }
+
+  lifecycle {
+    ignore_changes = [attribute_mapping, provider_details]
+  }
+}
+
 # a client for server and mobile app
 resource "aws_cognito_user_pool_client" "app_client" {
   name         = "${var.pool_name}-app-client"
@@ -130,7 +153,7 @@ resource "aws_cognito_user_pool_client" "app_client" {
     "exp://localhost:8081/--/"          # Expo Go wildcard
   ]
 
-  supported_identity_providers = ["Google"]
+  supported_identity_providers = ["Google", "SignInWithApple"]
 
   # allow user password auth and refresh token auth beside oauth
   explicit_auth_flows = [
@@ -140,6 +163,9 @@ resource "aws_cognito_user_pool_client" "app_client" {
 
   prevent_user_existence_errors = "ENABLED"
 
-  depends_on = [aws_cognito_identity_provider.google]
+  depends_on = [
+    aws_cognito_identity_provider.google,
+    aws_cognito_identity_provider.apple,
+  ]
 }
 

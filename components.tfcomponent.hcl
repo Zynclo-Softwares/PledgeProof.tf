@@ -33,6 +33,10 @@ component "cognito" {
     default_tags          = var.default_tags
     gcp_client_id         = var.gcp_client_id
     gcp_client_secret     = var.gcp_client_secret
+    apple_services_id     = var.apple_services_id
+    apple_team_id         = var.apple_team_id
+    apple_key_id          = var.apple_key_id
+    apple_private_key     = var.apple_private_key
   }
   providers = {
     aws           = provider.aws.configurations[each.value]
