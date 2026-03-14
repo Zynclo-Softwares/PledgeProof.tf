@@ -14,6 +14,10 @@ deployment "prod" {
     identity_token             = identity_token.aws.jwt
     gcp_client_id              = store.varset.pp_secrets.stable.gcp_client_id
     gcp_client_secret          = store.varset.pp_secrets.stable.gcp_client_secret
+    apple_services_id          = store.varset.pp_secrets.stable.apple_services_id
+    apple_team_id              = store.varset.pp_secrets.stable.apple_team_id
+    apple_key_id               = store.varset.pp_secrets.stable.apple_key_id
+    apple_private_key          = store.varset.pp_secrets.stable.apple_private_key
     cognito_custom_domain      = "pledgeproof-auth.zynclo.com"
     server_domain_name         = "api.pledgeproof.zynclo.com"
     qstash_token               = store.varset.pp_secrets.stable.qstash_token
