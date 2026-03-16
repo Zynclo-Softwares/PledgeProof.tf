@@ -62,6 +62,11 @@ variable "dinov2_lambda_arn" {
   type        = string
 }
 
+variable "pdf2img_lambda_arn" {
+  description = "ARN of the PDF-to-Image Lambda function for PDF rendering"
+  type        = string
+}
+
 variable "task_cpu" {
   description = "Fargate task CPU units (256, 512, 1024, 2048, 4096)."
   type        = number

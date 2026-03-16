@@ -79,7 +79,7 @@ resource "aws_iam_role_policy" "task_lambda" {
     Statement = [{
       Effect   = "Allow"
       Action   = ["lambda:InvokeFunction"]
-      Resource = var.dinov2_lambda_arn
+      Resource = [var.dinov2_lambda_arn, var.pdf2img_lambda_arn]
     }]
   })
 }

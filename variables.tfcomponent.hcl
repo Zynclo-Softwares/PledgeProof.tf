@@ -125,6 +125,23 @@ variable "dinov2_image_tag" {
   default     = "latest"
 }
 
+# ── PDF-to-Image Lambda tuning ──
+variable "pdf2img_memory_size" {
+  description = "Memory (MB) for the PDF-to-Image Lambda function."
+  type        = number
+  default     = 512
+}
+variable "pdf2img_timeout" {
+  description = "Timeout (seconds) for the PDF-to-Image Lambda function."
+  type        = number
+  default     = 30
+}
+variable "pdf2img_image_tag" {
+  description = "Container image tag for the PDF-to-Image Lambda."
+  type        = string
+  default     = "latest"
+}
+
 # ── Compute (ECS) tuning ──
 variable "compute_cpu" {
   description = "Fargate task CPU units (256, 512, 1024, 2048, 4096)."

@@ -58,6 +58,20 @@ component "dinov2" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+component "pdf2img" {
+  for_each = var.regions
+  source   = "./pdf2img"
+  inputs = {
+    function_name = "pledgeproof-pdf2img-${local.deployment}"
+    ecr_repo_name = "pledgeproof-pdf2img"
+    image_tag     = var.pdf2img_image_tag
+    memory_size   = var.pdf2img_memory_size
+    timeout       = var.pdf2img_timeout
+    default_tags  = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
+
 component "alb" {
   for_each = var.regions
   source   = "./alb"
@@ -88,6 +102,7 @@ component "compute" {
     dynamodb_table_arn   = component.dynamodb[each.key].table_arn
     s3_bucket_arn        = component.s3[each.key].bucket_arn
     dinov2_lambda_arn    = component.dinov2[each.key].function_arn
+    pdf2img_lambda_arn   = component.pdf2img[each.key].function_arn
     task_env = {
       QSTASH_TOKEN               = var.qstash_token
       QSTASH_CURRENT_SIGNING_KEY = var.qstash_current_signing_key
@@ -101,6 +116,7 @@ component "compute" {
       DYNAMO_TABLE               = component.dynamodb[each.key].table_name
       S3_BUCKET                  = component.s3[each.key].bucket_id
       DINOV2_FUNCTION_NAME       = component.dinov2[each.key].function_name
+      PDF2IMG_FUNCTION_NAME      = component.pdf2img[each.key].function_name
       COGNITO_USER_POOL_ID       = component.cognito[each.key].user_pool_id
       SERVER_URL                 = "https://${var.server_domain_name}"
       ENV                        = "prod"
