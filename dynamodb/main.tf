@@ -1,33 +1,48 @@
 resource "aws_dynamodb_table" "table" {
-  name         = var.table_name
-  
-  hash_key     = "PK"    
-  range_key    = "SK"    
+  name = var.table_name
 
   deletion_protection_enabled = true
-  
-  # Define ONLY your keys here—no JSON fields!
+
+  # noinspection — deprecated but key_schema not yet supported in aws_dynamodb_table
+  hash_key  = "PK"
+  range_key = "SK"
+
   attribute {
     name = "PK"
-    type = "S"  
+    type = "S"
   }
-  
+
   attribute {
-    name = "SK" 
-    type = "S"  
+    name = "SK"
+    type = "S"
   }
 
-	billing_mode   = var.billing_mode
-	read_capacity  = var.billing_mode == "PROVISIONED" ? var.read_capacity : null
-	write_capacity = var.billing_mode == "PROVISIONED" ? var.write_capacity : null
+  attribute {
+    name = "startTimeUtc"
+    type = "S"
+  }
 
-	tags = var.default_tags
+  # noinspection — hash_key/range_key deprecated but stable; key_schema not available here yet
+  global_secondary_index {
+    name            = "startTimeUtc-index"
+    hash_key        = "startTimeUtc"
+    range_key       = "SK"
+    projection_type = "ALL"
+  }
+
+  billing_mode   = var.billing_mode
+  read_capacity  = var.billing_mode == "PROVISIONED" ? var.read_capacity : null
+  write_capacity = var.billing_mode == "PROVISIONED" ? var.write_capacity : null
+
+  tags = var.default_tags
 }
 
 resource "aws_dynamodb_table" "dev_table" {
   count = var.enable_dev_table ? 1 : 0
 
-  name     = "${var.table_name}-dev"
+  name = "${var.table_name}-dev"
+
+  # noinspection — deprecated but key_schema not yet supported in aws_dynamodb_table
   hash_key  = "PK"
   range_key = "SK"
 
@@ -38,6 +53,19 @@ resource "aws_dynamodb_table" "dev_table" {
   attribute {
     name = "SK"
     type = "S"
+  }
+
+  attribute {
+    name = "startTimeUtc"
+    type = "S"
+  }
+
+  # noinspection — hash_key/range_key deprecated but stable; key_schema not available here yet
+  global_secondary_index {
+    name            = "startTimeUtc-index"
+    hash_key        = "startTimeUtc"
+    range_key       = "SK"
+    projection_type = "ALL"
   }
 
   billing_mode = "PAY_PER_REQUEST"

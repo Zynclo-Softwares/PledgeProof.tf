@@ -1,7 +1,7 @@
 required_providers {
   aws = {
     source  = "hashicorp/aws"
-    version = "~> 6.0" # ✅ Supports bus DLQ + latest [web:373]
+    version = "~> 6.0"
   }
 }
 provider "aws" "configurations" {
