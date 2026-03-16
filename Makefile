@@ -1,1 +1,0 @@
-# PledgeProof Terraform Automation

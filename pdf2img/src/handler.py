@@ -22,12 +22,13 @@ import pymupdf
 from PIL import Image
 
 
-def render_pages(pdf_bytes: bytes, scale: float = 2.0, max_pages: int = 20) -> list[bytes]:
-    """Render each PDF page to JPEG bytes."""
+def render_pages(pdf_bytes: bytes, scale: float = 2.0, max_pages: int = 20) -> tuple[list[bytes], int]:
+    """Render each PDF page to JPEG bytes. Returns (pages, total_page_count)."""
     doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+    total = len(doc)
     pages: list[bytes] = []
 
-    limit = min(len(doc), max_pages)
+    limit = min(total, max_pages)
     matrix = pymupdf.Matrix(scale, scale)
 
     for i in range(limit):
@@ -40,7 +41,7 @@ def render_pages(pdf_bytes: bytes, scale: float = 2.0, max_pages: int = 20) -> l
         pages.append(buf.getvalue())
 
     doc.close()
-    return pages
+    return pages, total
 
 
 def handler(event, _context):
@@ -54,11 +55,12 @@ def handler(event, _context):
         scale = min(float(event.get("scale", 2.0)), 3.0)
         max_pages = min(int(event.get("max_pages", 20)), 50)
 
-        page_images = render_pages(pdf_bytes, scale=scale, max_pages=max_pages)
+        page_images, total_pages = render_pages(pdf_bytes, scale=scale, max_pages=max_pages)
 
         return {
             "pages": [base64.b64encode(p).decode("ascii") for p in page_images],
             "page_count": len(page_images),
+            "total_pages": total_pages,
         }
 
     return {"error": f"Unknown action: {action}"}

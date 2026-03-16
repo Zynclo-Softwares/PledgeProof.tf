@@ -18,13 +18,14 @@ AWS_ACCOUNT  ?= 659271373941
 AWS_REGION   ?= ca-central-1
 ECR_REPO     ?= pledgeproof-dinov2
 IMAGE_TAG    ?= latest
+LAMBDA_NAME  ?= pledgeproof-dinov2-prod
 
 ECR_URI      = $(AWS_ACCOUNT).dkr.ecr.$(AWS_REGION).amazonaws.com/$(ECR_REPO)
 MODEL_DIR    = src/model
 MODEL_FILE   = $(MODEL_DIR)/dinov2_vits14.onnx
 MODEL_URL    = https://huggingface.co/sefaburak/dinov2-small-onnx/resolve/main/dinov2_vits14.onnx
 
-.PHONY: download-model build login push deploy clean
+.PHONY: download-model build login push deploy update-lambda clean
 
 # ── Download ONNX model from HuggingFace ──
 download-model: $(MODEL_FILE)
@@ -57,8 +58,18 @@ push: login
 	@echo "✓  Pushed"
 
 # ── All-in-one ──
-deploy: download-model build push
-	@echo "🚀 Done — image available at $(ECR_URI):$(IMAGE_TAG)"
+deploy: download-model build push update-lambda
+	@echo "🚀 Done — Lambda $(LAMBDA_NAME) updated with $(ECR_URI):$(IMAGE_TAG)"
+
+# ── Update Lambda to use the latest image ──
+update-lambda:
+	@echo "🔄 Updating Lambda $(LAMBDA_NAME)..."
+	@aws lambda update-function-code \
+		--function-name $(LAMBDA_NAME) \
+		--image-uri $(ECR_URI):$(IMAGE_TAG) \
+		--region $(AWS_REGION) \
+		--no-cli-pager > /dev/null
+	@echo "✓  Lambda updated"
 
 # ── Cleanup ──
 clean:
