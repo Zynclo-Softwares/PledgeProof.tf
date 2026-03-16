@@ -3,10 +3,8 @@ resource "aws_dynamodb_table" "table" {
 
   deletion_protection_enabled = true
 
-  key_schema {
-    hash_key  = "PK"
-    range_key = "SK"
-  }
+  hash_key  = "PK"
+  range_key = "SK"
 
   attribute {
     name = "PK"
@@ -42,10 +40,8 @@ resource "aws_dynamodb_table" "dev_table" {
 
   name = "${var.table_name}-dev"
 
-  key_schema {
-    hash_key  = "PK"
-    range_key = "SK"
-  }
+  hash_key  = "PK"
+  range_key = "SK"
 
   attribute {
     name = "PK"
