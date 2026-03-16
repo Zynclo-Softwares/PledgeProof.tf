@@ -3,9 +3,10 @@ resource "aws_dynamodb_table" "table" {
 
   deletion_protection_enabled = true
 
-  # noinspection — deprecated but key_schema not yet supported in aws_dynamodb_table
-  hash_key  = "PK"
-  range_key = "SK"
+  key_schema {
+    hash_key  = "PK"
+    range_key = "SK"
+  }
 
   attribute {
     name = "PK"
@@ -22,7 +23,6 @@ resource "aws_dynamodb_table" "table" {
     type = "S"
   }
 
-  # noinspection — hash_key/range_key deprecated but stable; key_schema not available here yet
   global_secondary_index {
     name            = "startTimeUtc-index"
     hash_key        = "startTimeUtc"
@@ -42,9 +42,10 @@ resource "aws_dynamodb_table" "dev_table" {
 
   name = "${var.table_name}-dev"
 
-  # noinspection — deprecated but key_schema not yet supported in aws_dynamodb_table
-  hash_key  = "PK"
-  range_key = "SK"
+  key_schema {
+    hash_key  = "PK"
+    range_key = "SK"
+  }
 
   attribute {
     name = "PK"
@@ -60,7 +61,6 @@ resource "aws_dynamodb_table" "dev_table" {
     type = "S"
   }
 
-  # noinspection — hash_key/range_key deprecated but stable; key_schema not available here yet
   global_secondary_index {
     name            = "startTimeUtc-index"
     hash_key        = "startTimeUtc"
