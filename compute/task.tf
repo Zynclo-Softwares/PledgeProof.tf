@@ -66,7 +66,10 @@ resource "aws_iam_role_policy" "task_bedrock" {
     Statement = [{
       Effect   = "Allow"
       Action   = ["bedrock:InvokeModel"]
-      Resource = "arn:aws:bedrock:*::foundation-model/anthropic.*"
+      Resource = [
+        "arn:aws:bedrock:*::foundation-model/anthropic.*",
+        "arn:aws:bedrock:*:${data.aws_caller_identity.current.account_id}:inference-profile/us.anthropic.*"
+      ]
     }]
   })
 }
