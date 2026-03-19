@@ -32,6 +32,11 @@ resource "aws_dynamodb_table" "table" {
   read_capacity  = var.billing_mode == "PROVISIONED" ? var.read_capacity : null
   write_capacity = var.billing_mode == "PROVISIONED" ? var.write_capacity : null
 
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
+
   tags = var.default_tags
 }
 
@@ -65,5 +70,11 @@ resource "aws_dynamodb_table" "dev_table" {
   }
 
   billing_mode = "PAY_PER_REQUEST"
+
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
+
   tags         = merge(var.default_tags, { Environment = "dev" })
 }
