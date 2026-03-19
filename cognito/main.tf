@@ -54,15 +54,6 @@ resource "aws_cognito_user_pool" "user_pool" {
   tags = var.default_tags
 }
 
-# Remove the zynclo.com A record from Terraform state without destroying it in AWS.
-# After one successful apply, this entire `removed` block can be deleted.
-removed {
-  from = aws_route53_record.parent_domain
-  lifecycle {
-    destroy = false
-  }
-}
-
 resource "aws_cognito_user_pool_domain" "cognito_domain" {
   domain          = var.cognito_custom_domain
   user_pool_id    = aws_cognito_user_pool.user_pool.id
