@@ -67,7 +67,6 @@ resource "aws_cognito_user_pool_domain" "cognito_domain" {
   domain          = var.cognito_custom_domain
   user_pool_id    = aws_cognito_user_pool.user_pool.id
   certificate_arn = aws_acm_certificate_validation.cognito_cert_verified.certificate_arn
-  depends_on      = [aws_route53_record.parent_domain]
 }
 
 resource "aws_route53_record" "cognito_custom_domain" {
