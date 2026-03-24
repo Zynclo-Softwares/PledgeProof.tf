@@ -32,6 +32,10 @@ resource "aws_dynamodb_table" "table" {
   read_capacity  = var.billing_mode == "PROVISIONED" ? var.read_capacity : null
   write_capacity = var.billing_mode == "PROVISIONED" ? var.write_capacity : null
 
+  point_in_time_recovery {
+    enabled = true
+  }
+
   ttl {
     attribute_name = "ttl"
     enabled        = true
