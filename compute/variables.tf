@@ -67,6 +67,11 @@ variable "pdf2img_lambda_arn" {
   type        = string
 }
 
+variable "cognito_user_pool_arn" {
+  description = "ARN of the Cognito user pool for account deletion"
+  type        = string
+}
+
 variable "task_cpu" {
   description = "Fargate task CPU units (256, 512, 1024, 2048, 4096)."
   type        = number

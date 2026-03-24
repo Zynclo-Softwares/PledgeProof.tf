@@ -87,6 +87,19 @@ resource "aws_iam_role_policy" "task_lambda" {
   })
 }
 
+resource "aws_iam_role_policy" "task_cognito" {
+  name = "${var.task_name}-cognito"
+  role = aws_iam_role.task_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["cognito-idp:AdminDeleteUser"]
+      Resource = [var.cognito_user_pool_arn]
+    }]
+  })
+}
+
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.task_name
   cpu                      = var.task_cpu
