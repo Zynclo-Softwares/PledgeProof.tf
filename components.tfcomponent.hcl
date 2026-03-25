@@ -72,6 +72,22 @@ component "pdf2img" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+component "resend_sync" {
+  for_each = var.regions
+  source   = "./resend-sync"
+  inputs = {
+    function_name        = "pledgeproof-resend-sync-${local.deployment}"
+    ecr_repo_name        = "pledgeproof-resend-sync"
+    image_tag            = var.resend_sync_image_tag
+    memory_size          = var.resend_sync_memory_size
+    timeout              = var.resend_sync_timeout
+    resend_api_key       = var.resend_api_key
+    cognito_user_pool_id = var.cognito_user_pool_id
+    default_tags         = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
+
 component "alb" {
   for_each = var.regions
   source   = "./alb"

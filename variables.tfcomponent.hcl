@@ -176,6 +176,33 @@ variable "dynamodb_write_capacity" {
   default     = 0
 }
 
+# ── Resend Sync Lambda tuning ──
+variable "resend_sync_memory_size" {
+  description = "Memory (MB) for the Resend Sync Lambda function."
+  type        = number
+  default     = 256
+}
+variable "resend_sync_timeout" {
+  description = "Timeout (seconds) for the Resend Sync Lambda function."
+  type        = number
+  default     = 120
+}
+variable "resend_sync_image_tag" {
+  description = "Container image tag for the Resend Sync Lambda."
+  type        = string
+  default     = "latest"
+}
+variable "resend_api_key" {
+  description = "Resend API key for contact sync."
+  type        = string
+  sensitive   = true
+}
+variable "cognito_user_pool_id" {
+  description = "Cognito User Pool ID to sync emails from."
+  type        = string
+  default     = "ca-central-1_NFOMStQGX"
+}
+
 locals {
   deployment = var.default_tags["Environment"]
 }

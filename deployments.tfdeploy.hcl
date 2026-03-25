@@ -29,6 +29,7 @@ deployment "prod" {
     github_private_key         = store.varset.pp_secrets.stable.github_private_key
     github_webhook_secret      = store.varset.pp_secrets.stable.github_webhook_secret
     revenuecat_api_key         = store.varset.pp_secrets.stable.revenuecat_api_key
+    resend_api_key             = store.varset.pp_secrets.stable.resend_api_key
     enable_dev_table           = true
 
     // DINOv2 Lambda tuning (defaults: 1536 MB, 30s, "latest")
