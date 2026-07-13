@@ -171,8 +171,9 @@ component "iam_railway_user" {
 # (the real project is already gone, so the destroy is a no-op) so the next
 # commit can recreate the component cleanly in iad. See RAILWAY_MIGRATION.md.
 removed {
-  from   = component.railway
-  source = "./railway"
+  for_each = var.regions
+  from     = component.railway[each.key]
+  source   = "./railway"
   providers = {
     railway = provider.railway.this
   }
