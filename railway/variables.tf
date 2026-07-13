@@ -45,13 +45,13 @@ variable "config_path" {
 }
 
 variable "region" {
-  description = "Railway region short code. sfo (California), ord (Chicago), ams (Amsterdam), sin (Singapore). Prefer the one closest to the AWS region the backend calls (ord is nearest ca-central-1)."
+  description = "Railway region short code. Available in this workspace: sin (Singapore), pdx (Portland), ams (Amsterdam), sfo (San Francisco), iad (N. Virginia). Prefer the one closest to the AWS region the backend calls — iad is nearest ca-central-1."
   type        = string
-  default     = "ord"
+  default     = "iad"
 
   validation {
-    condition     = contains(["sfo", "ord", "ams", "sin"], var.region)
-    error_message = "Region must be one of Railway's short region codes: sfo, ord, ams, sin."
+    condition     = contains(["sin", "pdx", "ams", "sfo", "iad"], var.region)
+    error_message = "Region must be one of the workspace's available regions: sin, pdx, ams, sfo, iad."
   }
 }
 

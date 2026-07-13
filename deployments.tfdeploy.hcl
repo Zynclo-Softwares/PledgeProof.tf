@@ -44,7 +44,7 @@ deployment "prod" {
     railway_workspace_id       = ""
     railway_source_repo        = "Zynclo-Softwares/PledgeProof.server"
     railway_source_repo_branch = "main"
-    railway_region             = "ord"
+    railway_region             = "iad"
     railway_num_replicas       = 1
     railway_service_subdomain  = "pledgeproof-api-prod"
 

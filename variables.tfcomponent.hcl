@@ -164,9 +164,9 @@ variable "railway_source_repo_branch" {
   default     = "main"
 }
 variable "railway_region" {
-  description = "Railway region short code (sfo, ord, ams, sin). ord (Chicago) is closest to ca-central-1."
+  description = "Railway region short code (available: sin, pdx, ams, sfo, iad). iad (N. Virginia) is closest to ca-central-1."
   type        = string
-  default     = "ord"
+  default     = "iad"
 }
 variable "railway_num_replicas" {
   description = "Number of Railway replicas."
