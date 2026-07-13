@@ -37,10 +37,20 @@ deployment "prod" {
     dinov2_timeout     = 30
     dinov2_image_tag   = "latest"
 
-    // Compute / ECS tuning (defaults: 256 CPU, 512 MB, max 1 task)
-    compute_cpu       = 256
-    compute_memory    = 512
-    compute_max_count = 1
+    // Railway backend (replaces ECS/ALB). Token is a Railway ACCOUNT/WORKSPACE
+    // token stored in the pp_secrets varset. Set railway_workspace_id only if
+    // the token can see more than one workspace.
+    railway_token              = store.varset.pp_secrets.stable.railway_token
+    railway_workspace_id       = ""
+    railway_source_repo        = "Zynclo-Softwares/PledgeProof.server"
+    railway_source_repo_branch = "main"
+    railway_region             = "ord"
+    railway_num_replicas       = 1
+    railway_service_subdomain  = "pledgeproof-api-prod"
+
+    // MIGRATION SWITCH — Phase 1: false (Railway runs alongside ALB/ECS).
+    // Flip to true for Phase 2 teardown ONLY after DNS is cut over to Railway.
+    decommission_backend_aws = false
 
     // DynamoDB tuning (default: on-demand)
     dynamodb_billing_mode   = "PAY_PER_REQUEST"

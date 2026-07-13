@@ -142,7 +142,55 @@ variable "pdf2img_image_tag" {
   default     = "latest"
 }
 
-# ── Compute (ECS) tuning ──
+# ── Railway backend (replaces the ECS/ALB compute stack) ──
+variable "railway_token" {
+  description = "Railway ACCOUNT or WORKSPACE API token (not a project token). Provisions the Railway project/service."
+  type        = string
+  sensitive   = true
+}
+variable "railway_workspace_id" {
+  description = "Railway workspace id. Required only if the token can see more than one workspace."
+  type        = string
+  default     = ""
+}
+variable "railway_source_repo" {
+  description = "GitHub repo Railway deploys the backend from, as <owner>/<repo>."
+  type        = string
+  default     = "Zynclo-Softwares/PledgeProof.server"
+}
+variable "railway_source_repo_branch" {
+  description = "Branch Railway watches for auto-deploys."
+  type        = string
+  default     = "main"
+}
+variable "railway_region" {
+  description = "Railway region short code (sfo, ord, ams, sin). ord (Chicago) is closest to ca-central-1."
+  type        = string
+  default     = "ord"
+}
+variable "railway_num_replicas" {
+  description = "Number of Railway replicas."
+  type        = number
+  default     = 1
+}
+variable "railway_service_subdomain" {
+  description = "Subdomain for the <subdomain>.up.railway.app smoke-test URL. Empty disables it."
+  type        = string
+  default     = "pledgeproof-api-prod"
+}
+
+# ── AWS backend decommission flag (Railway migration) ──
+# Phase 1 (false): the legacy ALB + ECS Fargate backend runs ALONGSIDE the new
+# Railway service, so the live api domain keeps serving while we smoke-test
+# Railway and cut over DNS. Phase 2 (true): tears the ALB + ECS backend down —
+# flip this ONLY after DNS is pointed at Railway.
+variable "decommission_backend_aws" {
+  description = "When true, removes the legacy ALB + ECS Fargate backend. Flip to true only AFTER the DNS cutover to Railway."
+  type        = bool
+  default     = false
+}
+
+# ── Legacy compute (ECS) tuning — used until decommission (see flag above) ──
 variable "compute_cpu" {
   description = "Fargate task CPU units (256, 512, 1024, 2048, 4096)."
   type        = number

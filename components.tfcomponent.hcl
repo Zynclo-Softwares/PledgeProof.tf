@@ -88,8 +88,12 @@ component "resend_sync" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+# ── Legacy ALB + ECS backend ──────────────────────────────────────────────
+# Kept ALONGSIDE Railway during the migration so the live api domain stays up
+# while we smoke-test Railway and cut over DNS. Gated by decommission_backend_aws:
+# flip that to true (Phase 2) to tear these down AFTER the DNS cutover.
 component "alb" {
-  for_each = var.regions
+  for_each = var.decommission_backend_aws ? toset([]) : var.regions
   source   = "./alb"
   inputs = {
     alb_domain_name = var.server_domain_name
@@ -100,7 +104,7 @@ component "alb" {
 }
 
 component "compute" {
-  for_each = var.regions
+  for_each = var.decommission_backend_aws ? toset([]) : var.regions
   source   = "./compute"
   inputs = {
     default_tags          = var.default_tags
@@ -140,4 +144,68 @@ component "compute" {
     }
   }
   providers = { aws = provider.aws.configurations[each.value] }
+}
+
+# IAM user carrying the exact permissions the old ECS task role had. The
+# backend now runs on Railway (off AWS) so it authenticates with these access
+# keys instead of an ECS task role.
+component "iam_railway_user" {
+  for_each = var.regions
+  source   = "./iam-railway-user"
+  inputs = {
+    user_name             = "pledgeproof-railway-${local.deployment}"
+    dynamodb_table_arn    = component.dynamodb[each.key].table_arn
+    s3_bucket_arn         = component.s3[each.key].bucket_arn
+    dinov2_lambda_arn     = component.dinov2[each.key].function_arn
+    pdf2img_lambda_arn    = component.pdf2img[each.key].function_arn
+    cognito_user_pool_arn = component.cognito[each.key].user_pool_arn
+    default_tags          = var.default_tags
+  }
+  providers = { aws = provider.aws.configurations[each.value] }
+}
+
+# Railway backend service — replaces the ECS Fargate service + ALB. Deploys
+# the Bun/Elysia server from GitHub, using the config-as-code in the repo's
+# railway.json. Env mirrors the old task_env plus the AWS access keys (which
+# the SDK's default credential chain picks up automatically). The custom
+# domain is registered here; its Route 53 record is flipped during cutover.
+component "railway" {
+  for_each = var.regions
+  source   = "./railway"
+  inputs = {
+    project_name        = "pledgeproof-${local.deployment}"
+    project_description = "PledgeProof backend (Bun + Elysia)."
+    workspace_id        = var.railway_workspace_id
+    service_name        = "pledgeproof-server"
+    source_repo         = var.railway_source_repo
+    source_repo_branch  = var.railway_source_repo_branch
+    root_directory      = "/"
+    config_path         = "railway.json"
+    region              = var.railway_region
+    num_replicas        = var.railway_num_replicas
+    service_subdomain   = var.railway_service_subdomain
+    custom_domain       = var.server_domain_name
+    variables = {
+      ENV                        = "prod"
+      AWS_REGION                 = each.value
+      DYNAMO_TABLE               = component.dynamodb[each.key].table_name
+      S3_BUCKET                  = component.s3[each.key].bucket_id
+      DINOV2_FUNCTION_NAME       = component.dinov2[each.key].function_name
+      PDF2IMG_FUNCTION_NAME      = component.pdf2img[each.key].function_name
+      COGNITO_USER_POOL_ID       = component.cognito[each.key].user_pool_id
+      SERVER_URL                 = "https://${var.server_domain_name}"
+      QSTASH_TOKEN               = var.qstash_token
+      QSTASH_CURRENT_SIGNING_KEY = var.qstash_current_signing_key
+      QSTASH_NEXT_SIGNING_KEY    = var.qstash_next_signing_key
+      ADMIN_PASS                 = var.admin_pass
+      GITHUB_APP_ID              = var.github_app_id
+      GITHUB_INSTALLATION_ID     = var.github_installation_id
+      GITHUB_PRIVATE_KEY_PATH    = var.github_private_key
+      GITHUB_WEBHOOK_SECRET      = var.github_webhook_secret
+      REVENUECAT_API_KEY         = var.revenuecat_api_key
+      AWS_ACCESS_KEY_ID          = component.iam_railway_user[each.key].access_key_id
+      AWS_SECRET_ACCESS_KEY      = component.iam_railway_user[each.key].secret_access_key
+    }
+  }
+  providers = { railway = provider.railway.this }
 }
