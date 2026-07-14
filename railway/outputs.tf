@@ -1,6 +1,6 @@
 output "project_id" {
   description = "Railway project id. Dashboard: https://railway.com/project/<id>"
-  value       = railway_project.this.id
+  value       = railway_project.app.id
 }
 
 output "service_id" {
@@ -10,7 +10,7 @@ output "service_id" {
 
 output "default_environment_id" {
   description = "Default environment id (usually 'production')."
-  value       = railway_project.this.default_environment.id
+  value       = railway_project.app.default_environment.id
 }
 
 output "service_domain" {

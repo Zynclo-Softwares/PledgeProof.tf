@@ -12,14 +12,35 @@ terraform {
 # ---------------------------------------------------------------------------
 # Project — top-level container in Railway. One project holds the backend
 # service, its environment, and its variables. Created private.
+#
+# Named `app` (not `this`) so the one-time `removed` block below can FORGET the
+# dead `railway_project.this` state entry in the SAME apply that creates this
+# fresh project.
 # ---------------------------------------------------------------------------
-resource "railway_project" "this" {
+resource "railway_project" "app" {
   name        = var.project_name
   description = var.project_description
   private     = true
 
   # Required when the API token can see more than one workspace.
   workspace_id = var.workspace_id != "" ? var.workspace_id : null
+}
+
+# ---------------------------------------------------------------------------
+# ONE-TIME STATE RESET — delete this block after it has applied once.
+#
+# The first apply created railway_project (id 5174fdf7) before failing on an
+# unavailable region, and that project was then deleted out-of-band. That left
+# a dead pointer in Stack state that the provider hard-errors on when it tries
+# to refresh ("project not found"). `destroy = false` makes Terraform drop it
+# from state WITHOUT a provider call, so it dodges that read error; the fresh
+# `railway_project.app` above replaces it.
+# ---------------------------------------------------------------------------
+removed {
+  from = railway_project.this
+  lifecycle {
+    destroy = false
+  }
 }
 
 # ---------------------------------------------------------------------------
@@ -33,7 +54,7 @@ resource "railway_project" "this" {
 # ---------------------------------------------------------------------------
 resource "railway_service" "this" {
   name       = var.service_name
-  project_id = railway_project.this.id
+  project_id = railway_project.app.id
 
   source_repo        = var.source_repo
   source_repo_branch = var.source_repo_branch
@@ -59,7 +80,7 @@ resource "railway_service" "this" {
 # masked in plan/state; pass secrets via the Stack's varset, never inline.
 # ---------------------------------------------------------------------------
 resource "railway_variable_collection" "env" {
-  environment_id = railway_project.this.default_environment.id
+  environment_id = railway_project.app.default_environment.id
   service_id     = railway_service.this.id
 
   variables = [
@@ -79,7 +100,7 @@ resource "railway_service_domain" "this" {
   count = var.service_subdomain != "" ? 1 : 0
 
   subdomain      = var.service_subdomain
-  environment_id = railway_project.this.default_environment.id
+  environment_id = railway_project.app.default_environment.id
   service_id     = railway_service.this.id
 }
 
@@ -95,6 +116,6 @@ resource "railway_custom_domain" "this" {
   count = var.custom_domain != "" ? 1 : 0
 
   domain         = var.custom_domain
-  environment_id = railway_project.this.default_environment.id
+  environment_id = railway_project.app.default_environment.id
   service_id     = railway_service.this.id
 }

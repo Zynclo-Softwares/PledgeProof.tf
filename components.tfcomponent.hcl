@@ -164,17 +164,48 @@ component "iam_railway_user" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
-# TEMP — migration state reset (revert after this applies). The first apply
-# created railway_project before failing on the bad region; that project was
-# then deleted out-of-band, leaving a stale state pointer that errors on
-# refresh. This `removed` block clears the railway component from Stack state
-# (the real project is already gone, so the destroy is a no-op) so the next
-# commit can recreate the component cleanly in iad. See RAILWAY_MIGRATION.md.
-removed {
+# Railway backend service — replaces the ECS Fargate service + ALB. Deploys
+# the Bun/Elysia server from GitHub, using the config-as-code in the repo's
+# railway.json. Env mirrors the old task_env plus the AWS access keys (which
+# the SDK's default credential chain picks up automatically). The custom
+# domain is registered here; its Route 53 record is flipped during cutover.
+component "railway" {
   for_each = var.regions
-  from     = component.railway[each.key]
   source   = "./railway"
-  providers = {
-    railway = provider.railway.this
+  inputs = {
+    project_name        = "pledgeproof-${local.deployment}"
+    project_description = "PledgeProof backend (Bun + Elysia)."
+    workspace_id        = var.railway_workspace_id
+    service_name        = "pledgeproof-server"
+    source_repo         = var.railway_source_repo
+    source_repo_branch  = var.railway_source_repo_branch
+    root_directory      = "/"
+    config_path         = "railway.json"
+    region              = var.railway_region
+    num_replicas        = var.railway_num_replicas
+    service_subdomain   = var.railway_service_subdomain
+    custom_domain       = var.server_domain_name
+    variables = {
+      ENV                        = "prod"
+      AWS_REGION                 = each.value
+      DYNAMO_TABLE               = component.dynamodb[each.key].table_name
+      S3_BUCKET                  = component.s3[each.key].bucket_id
+      DINOV2_FUNCTION_NAME       = component.dinov2[each.key].function_name
+      PDF2IMG_FUNCTION_NAME      = component.pdf2img[each.key].function_name
+      COGNITO_USER_POOL_ID       = component.cognito[each.key].user_pool_id
+      SERVER_URL                 = "https://${var.server_domain_name}"
+      QSTASH_TOKEN               = var.qstash_token
+      QSTASH_CURRENT_SIGNING_KEY = var.qstash_current_signing_key
+      QSTASH_NEXT_SIGNING_KEY    = var.qstash_next_signing_key
+      ADMIN_PASS                 = var.admin_pass
+      GITHUB_APP_ID              = var.github_app_id
+      GITHUB_INSTALLATION_ID     = var.github_installation_id
+      GITHUB_PRIVATE_KEY_PATH    = var.github_private_key
+      GITHUB_WEBHOOK_SECRET      = var.github_webhook_secret
+      REVENUECAT_API_KEY         = var.revenuecat_api_key
+      AWS_ACCESS_KEY_ID          = component.iam_railway_user[each.key].access_key_id
+      AWS_SECRET_ACCESS_KEY      = component.iam_railway_user[each.key].secret_access_key
+    }
   }
+  providers = { railway = provider.railway.this }
 }

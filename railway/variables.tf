@@ -45,14 +45,9 @@ variable "config_path" {
 }
 
 variable "region" {
-  description = "Railway region short code. Available in this workspace: sin (Singapore), pdx (Portland), ams (Amsterdam), sfo (San Francisco), iad (N. Virginia). Prefer the one closest to the AWS region the backend calls — iad is nearest ca-central-1."
+  description = "Railway region short code. Available in this workspace: sin, pdx, ams, sfo, iad. iad (N. Virginia) is nearest ca-central-1. Railway's API rejects invalid regions, so there is no local validation (a stale validation once blocked destroy/refresh of an old-region instance)."
   type        = string
   default     = "iad"
-
-  validation {
-    condition     = contains(["sin", "pdx", "ams", "sfo", "iad"], var.region)
-    error_message = "Region must be one of the workspace's available regions: sin, pdx, ams, sfo, iad."
-  }
 }
 
 variable "num_replicas" {
