@@ -146,6 +146,31 @@ component "compute" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
+# ── Teardown claim for the legacy ALB + ECS backend (Phase 2) ─────────────
+# When decommission_backend_aws flips to true, the alb/compute components above
+# drop to zero instances. Terraform Stacks does NOT auto-destroy the resulting
+# unclaimed state instances (…["ca-central-1"]) — a `removed` block must claim
+# them, or planning fails with "Unclaimed component instance". Each block is
+# gated OPPOSITE to its component, so exactly one of {component, removed} claims
+# a given instance at any time (no double-claim). Destroys the ALB + ECS stack.
+removed {
+  for_each = var.decommission_backend_aws ? var.regions : toset([])
+  from     = component.alb[each.key]
+  source   = "./alb"
+  providers = {
+    aws = provider.aws.configurations[each.value]
+  }
+}
+
+removed {
+  for_each = var.decommission_backend_aws ? var.regions : toset([])
+  from     = component.compute[each.key]
+  source   = "./compute"
+  providers = {
+    aws = provider.aws.configurations[each.value]
+  }
+}
+
 # IAM user carrying the exact permissions the old ECS task role had. The
 # backend now runs on Railway (off AWS) so it authenticates with these access
 # keys instead of an ECS task role.
