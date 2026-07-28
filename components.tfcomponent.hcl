@@ -88,88 +88,9 @@ component "resend_sync" {
   providers = { aws = provider.aws.configurations[each.value] }
 }
 
-# ── Legacy ALB + ECS backend ──────────────────────────────────────────────
-# Kept ALONGSIDE Railway during the migration so the live api domain stays up
-# while we smoke-test Railway and cut over DNS. Gated by decommission_backend_aws:
-# flip that to true (Phase 2) to tear these down AFTER the DNS cutover.
-component "alb" {
-  for_each = var.decommission_backend_aws ? toset([]) : var.regions
-  source   = "./alb"
-  inputs = {
-    alb_domain_name = var.server_domain_name
-    alb_name        = "pledgeproof-alb-${local.deployment}"
-    default_tags    = var.default_tags
-  }
-  providers = { aws = provider.aws.configurations[each.value] }
-}
-
-component "compute" {
-  for_each = var.decommission_backend_aws ? toset([]) : var.regions
-  source   = "./compute"
-  inputs = {
-    default_tags          = var.default_tags
-    ecr_repo_name         = "pledgeproof-server"
-    task_name             = "pledgeproof-task-${local.deployment}"
-    container_name        = "pledgeproof-container"
-    ecs_cluster_name      = "pledgeproof-cluster-${local.deployment}"
-    target_group_arn      = component.alb[each.key].alb_target_group_arn
-    alb_sg_id             = component.alb[each.key].alb_security_group_id
-    container_port        = 80
-    task_cpu              = var.compute_cpu
-    task_memory           = var.compute_memory
-    max_count             = var.compute_max_count
-    health_check_command  = ["/bin/httpcheck", "http://localhost:80/health"]
-    dynamodb_table_arn    = component.dynamodb[each.key].table_arn
-    s3_bucket_arn         = component.s3[each.key].bucket_arn
-    dinov2_lambda_arn     = component.dinov2[each.key].function_arn
-    pdf2img_lambda_arn    = component.pdf2img[each.key].function_arn
-    cognito_user_pool_arn = component.cognito[each.key].user_pool_arn
-    task_env = {
-      QSTASH_TOKEN               = var.qstash_token
-      QSTASH_CURRENT_SIGNING_KEY = var.qstash_current_signing_key
-      QSTASH_NEXT_SIGNING_KEY    = var.qstash_next_signing_key
-      ADMIN_PASS                 = var.admin_pass
-      GITHUB_APP_ID              = var.github_app_id
-      GITHUB_INSTALLATION_ID     = var.github_installation_id
-      GITHUB_PRIVATE_KEY_PATH    = var.github_private_key
-      GITHUB_WEBHOOK_SECRET      = var.github_webhook_secret
-      REVENUECAT_API_KEY         = var.revenuecat_api_key
-      DYNAMO_TABLE               = component.dynamodb[each.key].table_name
-      S3_BUCKET                  = component.s3[each.key].bucket_id
-      DINOV2_FUNCTION_NAME       = component.dinov2[each.key].function_name
-      PDF2IMG_FUNCTION_NAME      = component.pdf2img[each.key].function_name
-      COGNITO_USER_POOL_ID       = component.cognito[each.key].user_pool_id
-      SERVER_URL                 = "https://${var.server_domain_name}"
-      ENV                        = "prod"
-    }
-  }
-  providers = { aws = provider.aws.configurations[each.value] }
-}
-
-# ── Teardown claim for the legacy ALB + ECS backend (Phase 2) ─────────────
-# When decommission_backend_aws flips to true, the alb/compute components above
-# drop to zero instances. Terraform Stacks does NOT auto-destroy the resulting
-# unclaimed state instances (…["ca-central-1"]) — a `removed` block must claim
-# them, or planning fails with "Unclaimed component instance". Each block is
-# gated OPPOSITE to its component, so exactly one of {component, removed} claims
-# a given instance at any time (no double-claim). Destroys the ALB + ECS stack.
-removed {
-  for_each = var.decommission_backend_aws ? var.regions : toset([])
-  from     = component.alb[each.key]
-  source   = "./alb"
-  providers = {
-    aws = provider.aws.configurations[each.value]
-  }
-}
-
-removed {
-  for_each = var.decommission_backend_aws ? var.regions : toset([])
-  from     = component.compute[each.key]
-  source   = "./compute"
-  providers = {
-    aws = provider.aws.configurations[each.value]
-  }
-}
+# NOTE: The legacy ALB + ECS Fargate backend (alb + compute components) was
+# decommissioned on 2026-07-28 after the DNS cutover to Railway — removed here
+# along with the one-time `removed` blocks that claimed them for destruction.
 
 # IAM user carrying the exact permissions the old ECS task role had. The
 # backend now runs on Railway (off AWS) so it authenticates with these access

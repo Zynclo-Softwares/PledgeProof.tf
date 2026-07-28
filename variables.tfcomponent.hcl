@@ -179,34 +179,6 @@ variable "railway_service_subdomain" {
   default     = "pledgeproof-api-prod"
 }
 
-# ── AWS backend decommission flag (Railway migration) ──
-# Phase 1 (false): the legacy ALB + ECS Fargate backend runs ALONGSIDE the new
-# Railway service, so the live api domain keeps serving while we smoke-test
-# Railway and cut over DNS. Phase 2 (true): tears the ALB + ECS backend down —
-# flip this ONLY after DNS is pointed at Railway.
-variable "decommission_backend_aws" {
-  description = "When true, removes the legacy ALB + ECS Fargate backend. Flip to true only AFTER the DNS cutover to Railway."
-  type        = bool
-  default     = false
-}
-
-# ── Legacy compute (ECS) tuning — used until decommission (see flag above) ──
-variable "compute_cpu" {
-  description = "Fargate task CPU units (256, 512, 1024, 2048, 4096)."
-  type        = number
-  default     = 256
-}
-variable "compute_memory" {
-  description = "Fargate task memory (MB). Must be compatible with CPU."
-  type        = number
-  default     = 512
-}
-variable "compute_max_count" {
-  description = "Maximum number of ECS tasks for auto-scaling."
-  type        = number
-  default     = 1
-}
-
 # ── DynamoDB tuning ──
 variable "dynamodb_billing_mode" {
   description = "DynamoDB billing mode: PAY_PER_REQUEST or PROVISIONED."

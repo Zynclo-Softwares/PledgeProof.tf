@@ -12,10 +12,8 @@ terraform {
 # ---------------------------------------------------------------------------
 # Project — top-level container in Railway. One project holds the backend
 # service, its environment, and its variables. Created private.
-#
-# Named `app` (not `this`) so the one-time `removed` block below can FORGET the
-# dead `railway_project.this` state entry in the SAME apply that creates this
-# fresh project.
+# (Resource is named `app`, not `this`, for historical state reasons — do NOT
+# rename it or Terraform will destroy + recreate the live Railway project.)
 # ---------------------------------------------------------------------------
 resource "railway_project" "app" {
   name        = var.project_name
@@ -24,23 +22,6 @@ resource "railway_project" "app" {
 
   # Required when the API token can see more than one workspace.
   workspace_id = var.workspace_id != "" ? var.workspace_id : null
-}
-
-# ---------------------------------------------------------------------------
-# ONE-TIME STATE RESET — delete this block after it has applied once.
-#
-# The first apply created railway_project (id 5174fdf7) before failing on an
-# unavailable region, and that project was then deleted out-of-band. That left
-# a dead pointer in Stack state that the provider hard-errors on when it tries
-# to refresh ("project not found"). `destroy = false` makes Terraform drop it
-# from state WITHOUT a provider call, so it dodges that read error; the fresh
-# `railway_project.app` above replaces it.
-# ---------------------------------------------------------------------------
-removed {
-  from = railway_project.this
-  lifecycle {
-    destroy = false
-  }
 }
 
 # ---------------------------------------------------------------------------
