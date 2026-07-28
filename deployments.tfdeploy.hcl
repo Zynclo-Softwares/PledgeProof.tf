@@ -48,9 +48,9 @@ deployment "prod" {
     railway_num_replicas       = 1
     railway_service_subdomain  = "pledgeproof-api-prod"
 
-    // MIGRATION SWITCH — Phase 1: false (Railway runs alongside ALB/ECS).
-    // Flip to true for Phase 2 teardown ONLY after DNS is cut over to Railway.
-    decommission_backend_aws = false
+    // MIGRATION SWITCH — Phase 2: true (DNS cut over to Railway 2026-07-28).
+    // Destroys the alb + compute components (ALB, ECS/Fargate, ECR, cert).
+    decommission_backend_aws = true
 
     // DynamoDB tuning (default: on-demand)
     dynamodb_billing_mode   = "PAY_PER_REQUEST"
