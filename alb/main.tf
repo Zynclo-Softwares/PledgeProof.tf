@@ -73,18 +73,22 @@ resource "aws_lb_listener" "http_listener" {
     tags = var.default_tags
 }
 
-# create an alias record in route53 for the alb
-resource "aws_route53_record" "alb_alias" {
-  zone_id         = data.aws_route53_zone.zynclo.zone_id
-  name            = var.alb_domain_name
-  type            = "A"
-  allow_overwrite = true
-  alias {
-    name                   = aws_lb.alb.dns_name
-    zone_id                = aws_lb.alb.zone_id
-    evaluate_target_health = true
+# ---------------------------------------------------------------------------
+# The api.pledgeproof.zynclo.com A-alias that used to point here was replaced
+# out-of-band during the Railway DNS cutover: it is now a CNAME -> Railway,
+# managed outside this module. Terraform must therefore STOP managing this
+# record — otherwise every apply tries to recreate the A record and Route 53
+# rejects it ("conflicting RRSet of type CNAME with the same DNS name").
+#
+# `destroy = false` drops the resource from state WITHOUT a Route 53 delete
+# call (the old A record is already gone, and a delete would both error and
+# risk the live CNAME). Delete this block after it has applied once.
+# ---------------------------------------------------------------------------
+removed {
+  from = aws_route53_record.alb_alias
+  lifecycle {
+    destroy = false
   }
-  depends_on = [aws_lb.alb]
 }
 
 # create an alb target group (for using with a fargate ecs service later)
